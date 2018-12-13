@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="ShortUrls\Commands\CreateShortUrl\" />
+    <Folder Include="ShortUrls\Commands\DeleteShortUrl\" />
+    <Folder Include="ShortUrls\Commands\UpdateShortUrl\" />
+    <Folder Include="ShortUrls\Queries\GetShortUrl\" />
+    <Folder Include="Users\Commands\" />
+    <Folder Include="Users\Queries\" />
+  </ItemGroup>
+
+</Project>
