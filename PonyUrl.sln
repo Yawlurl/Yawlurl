@@ -30,9 +30,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PonyUrl.Infrastructure.Mong
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PonyUrl.Infrastructure.Redis", "Src\PonyUrl.Infrastructure.Redis\PonyUrl.Infrastructure.Redis.csproj", "{DBA95C1F-AAAE-44EB-BF7D-6849E48C7D69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PonyUrl.Core", "Src\PonyUrl.Core\PonyUrl.Core.csproj", "{FE820FF8-2BBD-4D2B-AA06-2D9A439CDF5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PonyUrl.Core", "Src\PonyUrl.Core\PonyUrl.Core.csproj", "{FE820FF8-2BBD-4D2B-AA06-2D9A439CDF5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PonyUrl.Common", "Src\PonyUrl.Common\PonyUrl.Common.csproj", "{F9E43434-743F-42FA-8C20-22EF9AFDB69E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PonyUrl.Common", "Src\PonyUrl.Common\PonyUrl.Common.csproj", "{F9E43434-743F-42FA-8C20-22EF9AFDB69E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PonyUrl.Integration.Test", "Tests\PonyUrl.Integration.Test\PonyUrl.Integration.Test.csproj", "{7D9D8ACD-2641-46FB-AC1F-569AA93BB594}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +74,10 @@ Global
 		{F9E43434-743F-42FA-8C20-22EF9AFDB69E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9E43434-743F-42FA-8C20-22EF9AFDB69E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9E43434-743F-42FA-8C20-22EF9AFDB69E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D9D8ACD-2641-46FB-AC1F-569AA93BB594}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D9D8ACD-2641-46FB-AC1F-569AA93BB594}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D9D8ACD-2641-46FB-AC1F-569AA93BB594}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D9D8ACD-2641-46FB-AC1F-569AA93BB594}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +94,7 @@ Global
 		{DBA95C1F-AAAE-44EB-BF7D-6849E48C7D69} = {B492979B-04AA-4325-8710-CC6E7619973F}
 		{FE820FF8-2BBD-4D2B-AA06-2D9A439CDF5E} = {B492979B-04AA-4325-8710-CC6E7619973F}
 		{F9E43434-743F-42FA-8C20-22EF9AFDB69E} = {B492979B-04AA-4325-8710-CC6E7619973F}
+		{7D9D8ACD-2641-46FB-AC1F-569AA93BB594} = {9B43C5E6-5BB2-4B7D-94F3-07D9A264FD69}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69754B93-EBAD-4F59-A6AC-6F1269C67BA2}

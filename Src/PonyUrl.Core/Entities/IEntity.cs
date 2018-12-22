@@ -1,7 +1,14 @@
-﻿namespace PonyUrl.Core.Entities
+﻿using System;
+
+namespace PonyUrl.Core
 {
-    public interface IEntity<TId>
+    public interface IEntity
     {
-        TId Id { get; set; }
+
+    }
+
+    public interface IEntity<TKey> : IEntity
+    {
+        TKey Id { get; set; }
     }
 }
