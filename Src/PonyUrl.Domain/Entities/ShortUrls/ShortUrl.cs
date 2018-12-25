@@ -1,11 +1,16 @@
-﻿using PonyUrl.Domain.Common;
+﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace PonyUrl.Domain.Entities.ShortUrls
+namespace PonyUrl.Domain.Entities
 {
     public class ShortUrl : AuditedEntity
     {
-        public string Code { get; set; }
+        [BsonElement("short_key")]
+        public string ShortKey { get; set; }
+
+        [BsonElement("long_url")]
         public string LongUrl { get; set; }
+
+        [BsonElement("hits")]
         public long Hits { get; set; }
     }
 }

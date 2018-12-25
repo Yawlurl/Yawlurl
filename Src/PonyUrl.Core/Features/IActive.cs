@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PonyUrl.Core.DataAccess
+namespace PonyUrl.Core
 {
-    public interface IRepository
+    public interface IActive
     {
+        bool IsActive { get;}
     }
 }
