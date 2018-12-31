@@ -23,6 +23,7 @@ namespace PonyUrl.Infrastructure.MongoDb
 
             Collection = _mongoDbContext.Collection<TEntity>();
         }
+         
 
         public virtual bool Delete(Guid id)
         {

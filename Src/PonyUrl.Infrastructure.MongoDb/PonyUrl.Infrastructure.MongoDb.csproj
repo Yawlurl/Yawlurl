@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PonyUrl.Common\PonyUrl.Common.csproj" />
     <ProjectReference Include="..\PonyUrl.Core\PonyUrl.Core.csproj" />
+    <ProjectReference Include="..\PonyUrl.Domain\PonyUrl.Domain.csproj" />
   </ItemGroup>
 
 </Project>

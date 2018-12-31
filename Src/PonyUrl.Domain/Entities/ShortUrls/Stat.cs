@@ -8,6 +8,11 @@ namespace PonyUrl.Domain.Entities
 {
     public class Stat : Entity, IDateAudit
     {
+        public Stat()
+        {
+            CreatedDate = DateTime.UtcNow;
+        }
+
         [BsonElement("shorturl_id")]
         [BsonRepresentation(BsonType.String)]
         public Guid ShortUrlId { get; set; }
@@ -29,10 +34,7 @@ namespace PonyUrl.Domain.Entities
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime UpdatedDate { get; set; }
 
-        public Stat()
-        {
-            CreatedDate = DateTime.UtcNow;
-        }
+        
 
         public Stat(Guid shortUrlId, string ipAddress, string referer, string userAgent) : this()
         {
