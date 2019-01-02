@@ -5,12 +5,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ShortUrls\Commands\CreateShortUrl\" />
-    <Folder Include="ShortUrls\Commands\DeleteShortUrl\" />
-    <Folder Include="ShortUrls\Commands\UpdateShortUrl\" />
-    <Folder Include="ShortUrls\Queries\GetShortUrl\" />
-    <Folder Include="Users\Commands\" />
-    <Folder Include="Users\Queries\" />
+    <Compile Remove="Users\**" />
+    <EmbeddedResource Remove="Users\**" />
+    <None Remove="Users\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ShortUrls\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PonyUrl.Domain\PonyUrl.Domain.csproj" />
   </ItemGroup>
 
 </Project>

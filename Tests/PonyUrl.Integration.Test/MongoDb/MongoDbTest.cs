@@ -1,12 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PonyUrl.Core;
-using PonyUrl.Infrastructure;
 using PonyUrl.Infrastructure.MongoDb;
 using System;
 using System.Threading.Tasks;
 using Xunit;
-using Microsoft.Extensions.Options;
 using System.IO;
 using FluentAssertions;
 

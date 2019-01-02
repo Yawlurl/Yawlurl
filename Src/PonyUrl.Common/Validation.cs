@@ -4,16 +4,20 @@ namespace PonyUrl.Common
 {
     public static class Validation
     {
-        public static void ArgumentNotNull(object obj)
+        public static void ArgumentNotNull(object obj, string paramName = "")
         {
-            if (IsNull(obj))
-                throw new ArgumentNullException(nameof(obj));
+            That<ArgumentNullException>(obj != null, paramName); 
         }
 
         public static void ArgumentNotNullOrEmpty(object obj)
         {
             if (IsNullOrEmpty(obj))
                 throw new ArgumentNullException(nameof(obj));
+        }
+
+        public static void NotNull(object obj, string paramName = "")
+        {
+            That<NullReferenceException>(obj != null, paramName);
         }
 
         public static void ArgumentNotUrl(string url)
@@ -50,6 +54,13 @@ namespace PonyUrl.Common
         public static bool IsValidUrl(string url)
         {
             return Uri.TryCreate(url, UriKind.Absolute, out Uri uri);
+        }
+
+
+        public static void That<TException>(bool condition, string message = "") where TException : Exception
+        {
+            if (!condition)
+                throw (TException)Activator.CreateInstance(typeof(TException), message);
         }
 
 

@@ -7,6 +7,6 @@ namespace PonyUrl.Infrastructure.MongoDb
 {
     public interface IMongoDbRepository<TEntity> : IRepository<TEntity, Guid> where TEntity : class, IEntity<Guid>
     {
-
+        
     }
 }

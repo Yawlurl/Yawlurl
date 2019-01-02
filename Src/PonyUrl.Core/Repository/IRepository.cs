@@ -7,24 +7,12 @@ using System.Threading.Tasks;
 
 namespace PonyUrl.Core
 {
-    public interface IRepostiory<TEntity>
+    public interface IRepository<TEntity> : IRepository<TEntity, Guid> where TEntity  : IEntity<Guid>
     {
-        IDbContext DbContext { get; }
-
-        List<TEntity> GetAll();
-
-        Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken = default(CancellationToken));
-
-        List<TEntity> GetMany(Expression<Func<TEntity, bool>> filter);
-
-        Task<List<TEntity>> GetManyAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default(CancellationToken));
-
-        long GetCount();
-
-        Task<long> GetCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+        
     }
 
-    public interface IRepository<TEntity, TKey> : IRepostiory<TEntity>
+    public interface IRepository<TEntity, TKey> 
     {
         TEntity Get(TKey id);
 
@@ -41,6 +29,20 @@ namespace PonyUrl.Core
         bool Delete(TKey id);
 
         Task<bool> DeleteAsync(TKey id, CancellationToken cancellationToken = default(CancellationToken));
+
+        IDbContext DbContext { get; }
+
+        List<TEntity> GetAll();
+
+        Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken = default(CancellationToken));
+
+        List<TEntity> GetMany(Expression<Func<TEntity, bool>> filter);
+
+        Task<List<TEntity>> GetManyAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default(CancellationToken));
+
+        long GetCount();
+
+        Task<long> GetCountAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 
 }
