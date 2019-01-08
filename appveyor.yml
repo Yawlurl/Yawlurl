@@ -1,0 +1,10 @@
+configuration: Release
+
+#restore nuget packages
+before_build:
+- nuget restore
+
+#package web application  
+build:
+  verbosity: minimal
+  publish_wap: true
