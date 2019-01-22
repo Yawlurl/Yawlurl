@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace PonyUrl.Application.ShortUrls.Queries.GetShortUrl
+namespace PonyUrl.Application.ShortUrls.Queries
 {
     public class GetShortUrlQuery : IRequest<ShortUrlViewModel>
     {

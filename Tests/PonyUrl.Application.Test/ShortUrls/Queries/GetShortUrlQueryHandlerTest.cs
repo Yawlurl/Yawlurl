@@ -1,19 +1,14 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using PonyUrl.Application.ShortUrls.Queries.GetShortUrl;
-using PonyUrl.Domain.Entities;
-using PonyUrl.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using PonyUrl.Application.ShortUrls.Queries;
+using PonyUrl.Domain;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace PonyUrl.Application.Test.ShortUrls.Queries
 {
-    
+
     public class GetShortUrlQueryHandlerTest : TestBase
     {
         private IShortUrlRepository _shortUrlRepository;

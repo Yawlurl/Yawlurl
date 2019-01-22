@@ -2,22 +2,24 @@
 using Microsoft.Extensions.DependencyInjection;
 using PonyUrl.Infrastructure.MongoDb;
 using System.IO;
+using PonyUrl.Infrastructure;
 
 namespace PonyUrl.Application.Test.Infrastructure
 {
-    public  class MongoDbContextFactory
+    public class MongoDbContextFactory
     {
         private static IMongoDbSettings _dbSettings;
-        private static  ServiceProvider serviceProvider;
-        private static string dbName = "PonyUrl_Int_Db";
+        private static ServiceProvider serviceProvider;
+        private const string dbName = "PonyUrl_Int_Db";
 
         public static MongoDbContext Create(ServiceCollection services)
         {
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                                                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-            
-            services.ConfigureMongoDb(builder.Build());
+            IConfiguration configuration = builder.Build();
+
+            services.ConfigureGlobal(configuration);
 
             serviceProvider = services.BuildServiceProvider();
 
@@ -27,7 +29,7 @@ namespace PonyUrl.Application.Test.Infrastructure
 
             dbContext.Client.DropDatabase(dbName);
 
-            return dbContext; 
+            return dbContext;
         }
     }
 }

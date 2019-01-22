@@ -1,5 +1,5 @@
-﻿using PonyUrl.Application.ShortUrls.Commands.DeleteShortUrl;
-using PonyUrl.Domain.Interfaces;
+﻿using PonyUrl.Application.ShortUrls.Commands;
+using PonyUrl.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Xunit;
@@ -47,7 +47,7 @@ namespace PonyUrl.Application.Test.ShortUrls.Commands
 
             await _commandHandler.Handle(command, CancellationToken.None);
 
-            var entity = _shortUrlRepository.Get(id);
+            var entity = await _shortUrlRepository.GetAsync(id);
 
             entity.Should().BeNull("Entity should be null!");    
 

@@ -1,10 +1,8 @@
-﻿using PonyUrl.Domain.Entities; 
+﻿using PonyUrl.Domain;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
-namespace PonyUrl.Application.ShortUrls.Queries.GetAllShortUrl
+namespace PonyUrl.Application.ShortUrls.Queries
 {
     public class ShortUrlDto
     {

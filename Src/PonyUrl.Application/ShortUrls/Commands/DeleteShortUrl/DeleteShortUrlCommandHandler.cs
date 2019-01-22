@@ -1,11 +1,10 @@
-﻿ 
-using MediatR;
+﻿using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using PonyUrl.Domain.Interfaces;
+using PonyUrl.Domain;
 using PonyUrl.Common;
 
-namespace PonyUrl.Application.ShortUrls.Commands.DeleteShortUrl
+namespace PonyUrl.Application.ShortUrls.Commands
 {
     public class DeleteShortUrlCommandHandler :   IRequestHandler<DeleteShortUrlCommand>
     {

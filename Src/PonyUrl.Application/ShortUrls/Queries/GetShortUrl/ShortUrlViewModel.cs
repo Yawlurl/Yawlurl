@@ -1,8 +1,8 @@
-﻿using PonyUrl.Domain.Entities;
+﻿using PonyUrl.Domain;
 using System;
 using System.Linq.Expressions;
 
-namespace PonyUrl.Application.ShortUrls.Queries.GetShortUrl
+namespace PonyUrl.Application.ShortUrls.Queries
 {
     public class ShortUrlViewModel
     {
