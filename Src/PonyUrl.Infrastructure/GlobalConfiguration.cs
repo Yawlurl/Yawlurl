@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PonyUrl.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using PonyUrl.Infrastructure.MongoDb;
+
 namespace PonyUrl.Infrastructure
 {
     public static class GlobalConfiguration
@@ -17,6 +15,9 @@ namespace PonyUrl.Infrastructure
             //MongoDb Congiguration
             services.ConfigureMongoDb(configuration);
 
+            //Managers
+            services.AddScoped<IShortKeyManager, ShortKeyManager>();
+            services.AddScoped<ISettingManager, SettingManager>();
 
         }
     }

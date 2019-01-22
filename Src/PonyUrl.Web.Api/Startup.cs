@@ -8,12 +8,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PonyUrl.Application.ShortUrls.Queries.GetShortUrl;
-using PonyUrl.Domain.Interfaces;
-using PonyUrl.Infrastructure.MongoDb;
-using PonyUrl.Infrastructure.MongoDb.Repository;
+using PonyUrl.Application.ShortUrls.Queries;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using PonyUrl.Infrastructure;
 
 namespace PonyUrl.Web.Api
 {
@@ -32,17 +30,15 @@ namespace PonyUrl.Web.Api
             // Swagger
             services.AddSwaggerGen(ConfigureSwaggerOptions);
 
-
             // Add MediatR
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>)); 
             services.AddMediatR(typeof(GetShortUrlQueryHandler).GetTypeInfo().Assembly);
 
-            // MongoDb
-            MongoDbConfiguration.ConfigureMongoDb(services, Configuration);
+            //MongoDb Configurations
+            //services.ConfigureMongoDb(Configuration);
 
-
-            // Add Dependencies 
-            services.AddTransient<IShortUrlRepository, ShortUrlRepository>();
+            //Global Configurations
+            services.ConfigureGlobal(Configuration);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
