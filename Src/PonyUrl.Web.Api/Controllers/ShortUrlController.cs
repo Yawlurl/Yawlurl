@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PonyUrl.Application.ShortUrls.Commands;
 using PonyUrl.Application.ShortUrls.Commands;
@@ -21,6 +22,7 @@ namespace PonyUrl.Web.Api.Controllers
         /// GetAll Short Url List
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("GetAll")]
         public async Task<ActionResult<ShortUrlListViewModel>> GetAll()
         {
