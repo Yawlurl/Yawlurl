@@ -7,7 +7,6 @@ using System.Threading;
 using FluentAssertions;
 using System;
 using PonyUrl.Core;
-using PonyUrl.Infrastructure;
 
 namespace PonyUrl.Application.Test.ShortUrls.Commands
 {
@@ -39,6 +38,7 @@ namespace PonyUrl.Application.Test.ShortUrls.Commands
             var result = await _commandHandler.Handle(command, CancellationToken.None);
 
             result.Should<Guid>();
+
         }
 
         [Fact]
@@ -51,5 +51,7 @@ namespace PonyUrl.Application.Test.ShortUrls.Commands
 
             await Assert.ThrowsAsync<ApplicationException>(() => _commandHandler.Handle(command, CancellationToken.None));
         }
+
+     
     }
 }
