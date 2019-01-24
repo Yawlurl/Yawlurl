@@ -1,14 +1,10 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
-using PonyUrl.Domain.Interfaces;
+using PonyUrl.Domain;
 using PonyUrl.Common;
 
-namespace PonyUrl.Application.ShortUrls.Queries.GetShortUrl
+namespace PonyUrl.Application.ShortUrls.Queries
 {
     public class GetShortUrlQueryHandler : IRequestHandler<GetShortUrlQuery, ShortUrlViewModel>
     {

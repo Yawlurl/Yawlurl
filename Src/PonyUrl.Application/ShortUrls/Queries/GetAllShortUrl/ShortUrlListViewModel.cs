@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PonyUrl.Application.ShortUrls.Queries.GetAllShortUrl
+namespace PonyUrl.Application.ShortUrls.Queries
 {
     public class ShortUrlListViewModel
     {

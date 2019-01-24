@@ -1,5 +1,4 @@
-﻿using PonyUrl.Domain.Entities;
-using PonyUrl.Domain.Interfaces;
+﻿using PonyUrl.Domain;
 
 namespace PonyUrl.Infrastructure.MongoDb.Repository
 {

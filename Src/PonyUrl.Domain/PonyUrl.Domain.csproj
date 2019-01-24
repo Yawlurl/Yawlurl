@@ -13,4 +13,8 @@
     <ProjectReference Include="..\PonyUrl.Core\PonyUrl.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
 </Project>

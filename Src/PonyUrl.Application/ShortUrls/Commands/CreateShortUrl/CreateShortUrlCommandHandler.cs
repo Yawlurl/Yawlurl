@@ -2,31 +2,40 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using PonyUrl.Domain.Interfaces;
-using PonyUrl.Domain.Entities;
+using PonyUrl.Domain;
+using PonyUrl.Core;
 
-namespace PonyUrl.Application.ShortUrls.Commands.CreateShortUrl
+namespace PonyUrl.Application.ShortUrls.Commands
 {
-    public class CreateShortUrlCommandHandler :  IRequestHandler<CreateShortUrlCommand, Guid>
+    public class CreateShortUrlCommandHandler : IRequestHandler<CreateShortUrlCommand, Guid>
     {
-        IShortUrlRepository _shortUrlRepository;
-        public CreateShortUrlCommandHandler(IShortUrlRepository shortUrlRepository)
+        private readonly IShortUrlRepository _shortUrlRepository;
+        private readonly IShortKeyManager _shortKeyManager;
+        private readonly CreateShortUrlValidator validator;
+
+        public CreateShortUrlCommandHandler(IShortUrlRepository shortUrlRepository, IShortKeyManager shortKeyManager)
         {
             _shortUrlRepository = shortUrlRepository;
+            _shortKeyManager = shortKeyManager;
+            validator = new CreateShortUrlValidator();
         }
 
         public async Task<Guid> Handle(CreateShortUrlCommand request, CancellationToken cancellationToken)
         {
-            var shortUrl = new ShortUrl(request.LongUrl);
+            var validationResult = validator.Validate(request);
 
-            // Generate Short Url code
-            string code = "";// IShortKeyManager.GenerateShortKey(request.LongUrl);
+            if(!validationResult.IsValid)
+            {
+                throw new ApplicationException(validationResult.Errors);
+            }
 
-            // TODO : ShortKey should be unique
-            shortUrl.ShortKey = code;
+            var shortUrl = new ShortUrl(request.LongUrl)
+            {
+                ShortKey = await _shortKeyManager.GenerateShortKeyRandomAsync(cancellationToken)
+            };
 
-            var result = await _shortUrlRepository.InsertAsync(shortUrl);
-             
+            var result = await _shortUrlRepository.InsertAsync(shortUrl, cancellationToken);
+
             return result.Id;
         }
     }

@@ -14,8 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using PonyUrl.Application.ShortUrls.Queries.GetShortUrl;
-using PonyUrl.Domain.Interfaces;
+using PonyUrl.Application.ShortUrls.Queries;
+using PonyUrl.Domain;
 using PonyUrl.Infrastructure.MongoDb;
 using PonyUrl.Infrastructure.MongoDb.Identity.Models;
 using PonyUrl.Infrastructure.MongoDb.Repository;
@@ -38,7 +38,6 @@ namespace PonyUrl.Web.Api
         {
             // Swagger
             services.AddSwaggerGen(ConfigureSwaggerOptions);
-
 
             // Add MediatR
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>)); 

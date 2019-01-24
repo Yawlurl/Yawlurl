@@ -23,6 +23,7 @@
     <ProjectReference Include="..\PonyUrl.Application\PonyUrl.Application.csproj" />
     <ProjectReference Include="..\PonyUrl.Infrastructure.MongoDb.Identity\PonyUrl.Infrastructure.MongoDb.Identity.csproj" />
     <ProjectReference Include="..\PonyUrl.Infrastructure.MongoDb\PonyUrl.Infrastructure.MongoDb.csproj" />
+    <ProjectReference Include="..\PonyUrl.Infrastructure\PonyUrl.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

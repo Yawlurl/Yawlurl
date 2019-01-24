@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PonyUrl.Application.ShortUrls.Commands.CreateShortUrl;
-using PonyUrl.Application.ShortUrls.Commands.DeleteShortUrl;
-using PonyUrl.Application.ShortUrls.Queries.GetAllShortUrl;
-using PonyUrl.Application.ShortUrls.Queries.GetShortUrl;
+using PonyUrl.Application.ShortUrls.Commands;
+using PonyUrl.Application.ShortUrls.Commands;
+using PonyUrl.Application.ShortUrls.Queries;
+using PonyUrl.Application.ShortUrls.Queries;
 
 namespace PonyUrl.Web.Api.Controllers
 {

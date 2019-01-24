@@ -7,42 +7,37 @@ using System.Threading.Tasks;
 
 namespace PonyUrl.Core
 {
-    public interface IRepository<TEntity> : IRepository<TEntity, Guid> where TEntity  : IEntity<Guid>
-    {
-        
-    }
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
     public interface IRepository<TEntity, TKey> 
     {
-        TEntity Get(TKey id);
+        IDbContext DbContext { get; }
 
         Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default(CancellationToken));
 
-        TEntity Insert(TEntity entity);
-
         Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
-
-        TEntity Update(TEntity entity);
 
         Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
 
-        bool Delete(TKey id);
-
         Task<bool> DeleteAsync(TKey id, CancellationToken cancellationToken = default(CancellationToken));
-
-        IDbContext DbContext { get; }
-
-        List<TEntity> GetAll();
 
         Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        List<TEntity> GetMany(Expression<Func<TEntity, bool>> filter);
-
         Task<List<TEntity>> GetManyAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default(CancellationToken));
 
-        long GetCount();
-
         Task<long> GetCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    public interface IRepository<TEntity> : IRepository<TEntity, Guid> where TEntity : IEntity<Guid>
+    {
+
     }
 
 }

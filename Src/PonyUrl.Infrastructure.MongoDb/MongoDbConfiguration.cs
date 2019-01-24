@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PonyUrl.Domain.Interfaces;
+using PonyUrl.Domain;
 using PonyUrl.Infrastructure.MongoDb.Repository;
 
 namespace PonyUrl.Infrastructure.MongoDb
@@ -20,6 +20,8 @@ namespace PonyUrl.Infrastructure.MongoDb
             services.AddScoped(typeof(IMongoDbRepository<>), typeof(MongoDbRepository<>));
 
             services.AddScoped<IShortUrlRepository, ShortUrlRepository>();
+            services.AddScoped<ISettingRepository, SettingRepository>();
+            services.AddScoped<IStatRepository, StatRepository>();
         }
 
         public static MongoDbAppSettings GetMongoDbAppSettings(IConfiguration configuration)
