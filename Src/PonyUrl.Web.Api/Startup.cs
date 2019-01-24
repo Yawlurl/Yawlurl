@@ -53,6 +53,7 @@ namespace PonyUrl.Web.Api
             });
 
 
+
             // ===== Add Jwt Authentication ========
             //remove default claim
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
