@@ -12,19 +12,11 @@ namespace PonyUrl.Application.Test.ShortUrls.Commands
 {
     public class CreateShortUrlCommandHandlerTest : TestBase
     {
-        private readonly IShortUrlRepository _shortUrlRepository;
-        private readonly IShortKeyManager _shortKeyManager;
         private readonly CreateShortUrlCommandHandler _commandHandler;
 
         public CreateShortUrlCommandHandlerTest()
         {
-
-            var serviceProvider = services.BuildServiceProvider();
-
-            _shortUrlRepository = serviceProvider.GetService<IShortUrlRepository>();
-            _shortKeyManager = serviceProvider.GetService<IShortKeyManager>();
-
-            _commandHandler = new CreateShortUrlCommandHandler(_shortUrlRepository, _shortKeyManager);
+            _commandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(), That<IShortKeyManager>());
         }
 
         [Fact]

@@ -1,58 +1,44 @@
 ﻿using PonyUrl.Application.ShortUrls.Commands;
 using PonyUrl.Domain;
-using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Xunit;
-using PonyUrl.Domain.Entities;
 using System;
-using System.Linq;
 using FluentAssertions;
 using System.Threading;
+using PonyUrl.Core;
 
 namespace PonyUrl.Application.Test.ShortUrls.Commands
 {
-   public  class DeleteShortUrlCommandHandlerTest : TestBase
+    public class DeleteShortUrlCommandHandlerTest : TestBase
     {
-        private readonly IShortUrlRepository _shortUrlRepository;
-        private readonly DeleteShortUrlCommandHandler _commandHandler;
-         
+        private readonly CreateShortUrlCommandHandler _createCommandHandler;
+        private readonly DeleteShortUrlCommandHandler _deleteCommandHandler;
+
 
         public DeleteShortUrlCommandHandlerTest()
         {
-
-            var serviceProvider = services.BuildServiceProvider();
-
-            _shortUrlRepository = serviceProvider.GetService<IShortUrlRepository>();
-
-            _shortUrlRepository.InsertAsync(new ShortUrl("http://www.google.com"));
-            _shortUrlRepository.InsertAsync(new ShortUrl("http://www.yahoo.com"));
-
-            _commandHandler = new DeleteShortUrlCommandHandler(_shortUrlRepository);
+            _createCommandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(), 
+                                                                     That<IShortKeyManager>());
+            _deleteCommandHandler = new DeleteShortUrlCommandHandler(That<IShortUrlRepository>());
         }
 
 
         [Fact]
         public async Task DeleteShortUrl()
         {
-             
-            var list = await _shortUrlRepository.GetAllAsync();
-            var id = list.Find(q => q.LongUrl == "http://www.google.com").Id;
+            var id = await _createCommandHandler.Handle(new CreateShortUrlCommand()
+            {
+                LongUrl = "http://www.google.com"
+            },
+            CancellationToken.None);
 
             id.Should().As<Guid>();
 
-            DeleteShortUrlCommand command = new DeleteShortUrlCommand
-            {
-                Id = id
-            };
+            await _deleteCommandHandler.Handle(new DeleteShortUrlCommand() { Id = id }, CancellationToken.None);
 
-            await _commandHandler.Handle(command, CancellationToken.None);
+            var entity = await That<IShortUrlRepository>().GetAsync(id);
 
-            var entity = await _shortUrlRepository.GetAsync(id);
-
-            entity.Should().BeNull("Entity should be null!");    
-
-
-
+            entity.Should().BeNull("Entity should be null!");
         }
 
 

@@ -7,29 +7,32 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+using PonyUrl.Application.ShortUrls.Commands;
+using PonyUrl.Core;
 
 namespace PonyUrl.Application.Test.ShortUrls.Queries
 {
-    public  class GetAllShortUrlQueryHandlerTest : TestBase
+    public class GetAllShortUrlQueryHandlerTest : TestBase
     {
-        private IShortUrlRepository _shortUrlRepository;
-        GetAllShortUrlQueryHandler _queryhandler;
+        private readonly GetAllShortUrlQueryHandler _queryhandler;
+        private readonly CreateShortUrlCommandHandler _commandHandler;
+
         public GetAllShortUrlQueryHandlerTest()
         {
-            var serviceProvider = services.BuildServiceProvider();
-
-            _shortUrlRepository = serviceProvider.GetService<IShortUrlRepository>();
-
-            _shortUrlRepository.InsertAsync(new ShortUrl("http://www.google.com"));
-            _shortUrlRepository.InsertAsync(new ShortUrl("http://www.yahoo.com"));
-
-            _queryhandler = new GetAllShortUrlQueryHandler(_shortUrlRepository);
+            _commandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(), That<IShortKeyManager>());
+            _queryhandler = new GetAllShortUrlQueryHandler(That<IShortUrlRepository>());
         }
 
         [Fact]
         public async Task GetAllShortUrl_Test()
         {
-           var result = await  _queryhandler.Handle(new GetAllShortUrlQuery(), CancellationToken.None);
+            var id = await _commandHandler.Handle(new CreateShortUrlCommand()
+            {
+                LongUrl = "http://www.google.com"
+            },
+            CancellationToken.None);
+
+            var result = await _queryhandler.Handle(new GetAllShortUrlQuery(), CancellationToken.None);
 
             result.Should().BeOfType<ShortUrlListViewModel>();
 

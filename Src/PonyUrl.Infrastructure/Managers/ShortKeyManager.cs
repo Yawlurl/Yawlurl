@@ -11,6 +11,9 @@ using System.Linq;
 
 namespace PonyUrl.Infrastructure
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ShortKeyManager : IShortKeyManager
     {
         private readonly IShortUrlRepository _shortUrlRepository;
@@ -22,11 +25,21 @@ namespace PonyUrl.Infrastructure
             _settingManager = settingManager;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<List<string>> ForbiddenWordsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return await _settingManager.ForbiddenWords();
         }
 
+        /// <summary>
+        /// Generate unique shortkey
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<string> GenerateShortKeyRandomAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             string shortKey = string.Empty;
@@ -34,8 +47,6 @@ namespace PonyUrl.Infrastructure
             var forbiddenWords = await ForbiddenWordsAsync();
 
             bool isExist, containsForbiddenWord = false;
-
-            //TODO:Add Forbidden words
 
             do
             {
@@ -51,29 +62,41 @@ namespace PonyUrl.Infrastructure
             return shortKey;
         }
 
-
+        /// <summary>
+        /// Check key if exist in collection
+        /// </summary>
+        /// <param name="shortKey"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<bool> IsExistAsync(string shortKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await _shortUrlRepository.IsExistAsync(shortKey, cancellationToken);
         }
 
+        /// <summary>
+        /// Generate base62 random string
+        /// </summary>
+        /// <param name="size"></param>
+        /// <returns></returns>
         private string RandomKey(int size = 7)
         {
+            var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
 
-            char[] chars =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
-            byte[] data = new byte[size];
-            using (RNGCryptoServiceProvider crypto = new RNGCryptoServiceProvider())
+            var data = new byte[size];
+
+            using (var crypto = new RNGCryptoServiceProvider())
             {
                 crypto.GetBytes(data);
             }
-            StringBuilder result = new StringBuilder(size);
+
+            var result = new StringBuilder(size);
+
             foreach (byte b in data)
             {
                 result.Append(chars[b % (chars.Length)]);
             }
-            return result.ToString();
 
+            return result.ToString();
         }
     }
 }
