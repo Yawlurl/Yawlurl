@@ -1,10 +1,10 @@
-﻿ using MediatR;
+﻿using MediatR;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using PonyUrl.Domain.Interfaces;
+using PonyUrl.Domain;
 
-namespace PonyUrl.Application.ShortUrls.Queries.GetAllShortUrl
+namespace PonyUrl.Application.ShortUrls.Queries
 {
     public class GetAllShortUrlQueryHandler : IRequestHandler<GetAllShortUrlQuery, ShortUrlListViewModel>
     {
@@ -21,7 +21,7 @@ namespace PonyUrl.Application.ShortUrls.Queries.GetAllShortUrl
 
             var model = new ShortUrlListViewModel
             {
-                 ShortUrls = list.AsQueryable().Select(ShortUrlDto.Map)
+                ShortUrls = list.AsQueryable().Select(ShortUrlDto.Map)
             };
 
             return model;

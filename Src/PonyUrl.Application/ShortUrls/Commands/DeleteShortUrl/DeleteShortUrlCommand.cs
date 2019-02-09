@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace PonyUrl.Application.ShortUrls.Commands.DeleteShortUrl
+namespace PonyUrl.Application.ShortUrls.Commands
 {
     public class DeleteShortUrlCommand : IRequest 
     {

@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using PonyUrl.Common;
 
-namespace PonyUrl.Domain.Entities
+namespace PonyUrl.Domain
 {
     public class ShortUrl : AuditedEntity
     {

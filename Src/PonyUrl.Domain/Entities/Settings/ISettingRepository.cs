@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PonyUrl.Domain.Entities
+namespace PonyUrl.Domain
 {
-    public class User : Entity
+    public interface ISettingRepository : IRepository<Setting>
     {
     }
 }

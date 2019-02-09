@@ -4,7 +4,7 @@ using PonyUrl.Common;
 using PonyUrl.Core;
 using System;
 
-namespace PonyUrl.Domain.Entities
+namespace PonyUrl.Domain
 {
     public class Stat : Entity, IDateAudit
     {

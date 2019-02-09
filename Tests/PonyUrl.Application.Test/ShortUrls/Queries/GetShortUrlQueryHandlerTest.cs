@@ -1,41 +1,33 @@
 ﻿using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using PonyUrl.Application.ShortUrls.Queries.GetShortUrl;
-using PonyUrl.Domain.Entities;
-using PonyUrl.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using PonyUrl.Application.ShortUrls.Commands;
+using PonyUrl.Application.ShortUrls.Queries;
+using PonyUrl.Core;
+using PonyUrl.Domain;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace PonyUrl.Application.Test.ShortUrls.Queries
 {
-    
+
     public class GetShortUrlQueryHandlerTest : TestBase
     {
-        private IShortUrlRepository _shortUrlRepository;
-        GetShortUrlQueryHandler _queryhandler;
+        private readonly CreateShortUrlCommandHandler _commandHandler;
+        private readonly GetShortUrlQueryHandler _queryhandler;
         public GetShortUrlQueryHandlerTest()
         {
-            var serviceProvider = services.BuildServiceProvider();
-
-            _shortUrlRepository = serviceProvider.GetService<IShortUrlRepository>();
-
-            _shortUrlRepository.InsertAsync(new ShortUrl("http://www.google.com"));
-            _shortUrlRepository.InsertAsync(new ShortUrl("http://www.yahoo.com"));
-
-            _queryhandler = new GetShortUrlQueryHandler(_shortUrlRepository);
+            _queryhandler = new GetShortUrlQueryHandler(That<IShortUrlRepository>());
+            _commandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(), That<IShortKeyManager>());
         }
 
         [Fact]
         public async Task GetShortUrl_Test()
         {
-            var list = await _shortUrlRepository.GetAllAsync();
-            var id = list.Find(q => q.LongUrl == "http://www.google.com").Id;
-
+            var id = await _commandHandler.Handle(new CreateShortUrlCommand()
+            {
+                LongUrl = "http://www.google.com"
+            },
+            CancellationToken.None);
 
             var result = await _queryhandler.Handle(new GetShortUrlQuery { Id = id }, CancellationToken.None);
 

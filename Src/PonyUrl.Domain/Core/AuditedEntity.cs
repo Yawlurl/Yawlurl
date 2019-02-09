@@ -17,13 +17,13 @@ namespace PonyUrl.Domain
         public DateTime CreatedDate { get; set; }
 
         [BsonElement("creator")]
-        public virtual User CreatedBy { get; set; }
+        public virtual IUser CreatedBy { get; set; }
 
         [BsonElement("updated_date")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime UpdatedDate { get; set; }
 
         [BsonElement("modifier")]
-        public virtual User UpdatedBy { get; set; }
+        public virtual IUser UpdatedBy { get; set; }
     }
 }
