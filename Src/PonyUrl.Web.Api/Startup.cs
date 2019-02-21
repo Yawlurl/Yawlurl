@@ -7,32 +7,43 @@ using System.Text;
 using AspNetCore.Identity.Mongo;
 using MediatR;
 using MediatR.Pipeline;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using PonyUrl.Application.ShortUrls.Queries;
-using PonyUrl.Domain;
+using PonyUrl.Infrastructure.AspNetCore;
 using PonyUrl.Infrastructure.MongoDb;
-using PonyUrl.Infrastructure.MongoDb.Identity.Models;
-using PonyUrl.Infrastructure.MongoDb.Repository;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
+
 namespace PonyUrl.Web.Api
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IConfiguration Configuration { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -43,45 +54,21 @@ namespace PonyUrl.Web.Api
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>)); 
             services.AddMediatR(typeof(GetShortUrlQueryHandler).GetTypeInfo().Assembly);
 
+            //Add AspNetCore
+            services.ConfigureAspNetCore(Configuration);
+
             // MongoDb
-            MongoDbConfiguration.ConfigureMongoDb(services, Configuration);
+            services.ConfigureMongoDb(Configuration);
 
-            // MongoDb Identity
-            services.AddIdentityMongoDbProvider<ApplicationUser>(options =>
-            {
-                options.ConnectionString = MongoDbConfiguration.GetMongoDbAppSettings(Configuration).ConnectionString;
-            });
-
-
-
-            // ===== Add Jwt Authentication ========
-            //remove default claim
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(cfg =>
-            {
-                cfg.RequireHttpsMetadata = false;
-                cfg.SaveToken = false;
-                cfg.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = Configuration["JwtIssuer"],
-                    ValidAudience = Configuration["JwtIssuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtKey"])),
-                    ClockSkew = TimeSpan.Zero // remove delay of token when expire
-                };
-            });
-
-
-            // Add Dependencies 
-            services.AddTransient<IShortUrlRepository, ShortUrlRepository>();
+         
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            //ExceptionFilters
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(ApiExcepitonFilterAttribute));
+            });
         }
 
         private void ConfigureSwaggerOptions(SwaggerGenOptions options)
@@ -113,8 +100,11 @@ namespace PonyUrl.Web.Api
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             options.IncludeXmlComments(xmlPath);
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -143,7 +133,8 @@ namespace PonyUrl.Web.Api
             app.UseSwagger();
             app.UseSwaggerUI(s =>
             {
-                s.SwaggerEndpoint("/swagger/v1/swagger.json", "PonyUrl API v1");
+                s.SwaggerEndpoint("/swagger/v1/swagger.json", "PonyUrl API");
+                s.RoutePrefix = string.Empty;
             });
         }
     }

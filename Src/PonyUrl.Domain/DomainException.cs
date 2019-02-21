@@ -2,6 +2,9 @@
 
 namespace PonyUrl.Domain
 {
+    /// <summary>
+    /// The exception that is thrown when there is an undesirable situaion in domain layer.
+    /// </summary>
     public class DomainException : Exception
     {
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PonyUrl.Infrastructure.MongoDb.Identity.Models.AccountViewModels
+namespace PonyUrl.Infrastructure.AspNetCore.Models.AccountViewModels
 {
     public class ForgotPasswordViewModel
     {

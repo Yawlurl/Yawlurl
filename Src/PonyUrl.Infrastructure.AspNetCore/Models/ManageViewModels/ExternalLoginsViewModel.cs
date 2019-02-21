@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
-namespace PonyUrl.Infrastructure.MongoDb.Identity.Models.ManageViewModels
+namespace PonyUrl.Infrastructure.AspNetCore.Models.ManageViewModels
 {
     public class ExternalLoginsViewModel
     {

@@ -22,7 +22,7 @@ namespace PonyUrl.Domain
 
         public void SetValue(dynamic value)
         {
-            Validation.ArgumentNotNullOrEmpty(value);
+            Check.ArgumentNotNullOrEmpty(value);
 
             Value = value;
         }

@@ -52,7 +52,7 @@ namespace PonyUrl.Infrastructure
             {
                 shortKey = RandomKey();
 
-                if (Validation.IsNotNull(forbiddenWords) && forbiddenWords.Any())
+                if (Check.IsNotNull(forbiddenWords) && forbiddenWords.Any())
                     containsForbiddenWord = forbiddenWords.Any(b => shortKey.Contains(b));
 
                 isExist = await IsExistAsync(shortKey);

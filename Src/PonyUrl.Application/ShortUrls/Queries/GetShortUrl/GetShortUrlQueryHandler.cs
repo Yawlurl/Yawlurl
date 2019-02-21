@@ -19,7 +19,7 @@ namespace PonyUrl.Application.ShortUrls.Queries
 
             var entity = await _shortUrlRepository.GetAsync(request.Id);
 
-            Validation.ArgumentNotNull(entity, "ShortUrl cannot find!");
+            Check.ArgumentNotNull(entity, "ShortUrl cannot find!");
 
            
             return new ShortUrlViewModel

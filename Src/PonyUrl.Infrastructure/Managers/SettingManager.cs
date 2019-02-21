@@ -22,7 +22,7 @@ namespace PonyUrl.Infrastructure
 
         public async Task AddForbiddenWord(string word)
         {
-            Validation.ArgumentNotNullOrEmpty(word);
+            Check.ArgumentNotNullOrEmpty(word);
 
             var setting = (await _settingRepository.GetManyAsync(s => s.Name.Equals(FORBIDDEN_WORDS_SETTING_NAME))).FirstOrDefault();
 
@@ -47,7 +47,7 @@ namespace PonyUrl.Infrastructure
 
         public async Task RemoveForbiddenWord(string word)
         {
-            Validation.ArgumentNotNullOrEmpty(word);
+            Check.ArgumentNotNullOrEmpty(word);
 
             var setting = (await _settingRepository.GetManyAsync(s => s.Name.Equals(FORBIDDEN_WORDS_SETTING_NAME))).FirstOrDefault();
 

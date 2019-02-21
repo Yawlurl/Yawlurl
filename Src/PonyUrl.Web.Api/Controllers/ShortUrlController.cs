@@ -3,15 +3,19 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PonyUrl.Application.ShortUrls.Commands;
-using PonyUrl.Application.ShortUrls.Commands;
-using PonyUrl.Application.ShortUrls.Queries;
 using PonyUrl.Application.ShortUrls.Queries;
 
 namespace PonyUrl.Web.Api.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ShortUrlController : BaseController
     {
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("ping")]
         public ActionResult Ping()
         {
@@ -29,14 +33,23 @@ namespace PonyUrl.Web.Api.Controllers
             return Ok(await Mediator.Send(new GetAllShortUrlQuery()));
         }
 
-        // GET api/ShortUrl/DA311F07-E167-43AF-B21F-9A5E7382ED69
+        
+        /// <summary>
+        /// GET api/ShortUrl/DA311F07-E167-43AF-B21F-9A5E7382ED69
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
             return Ok(await Mediator.Send(new GetShortUrlQuery { Id = id }));
         }
 
-        // Post api/ShortUrl/create
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateShortUrlCommand command)
         {
@@ -46,7 +59,11 @@ namespace PonyUrl.Web.Api.Controllers
             return Ok(await Mediator.Send(command));
         }
 
-        // Post api/ShortUrl/delete
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         [HttpPost("Delete")]
         public async Task<IActionResult> Delete([FromBody] DeleteShortUrlCommand command)
         {

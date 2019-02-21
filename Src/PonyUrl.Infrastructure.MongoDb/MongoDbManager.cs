@@ -25,7 +25,7 @@ namespace PonyUrl.Infrastructure.MongoDb
                 
                 mongoClient = new MongoClient(mongoDbSettings.MongoUrl);
 
-                result = Validation.IsNotNull(mongoClient.GetDatabase(mongoDbSettings.MongoUrl.DatabaseName));
+                result = Check.IsNotNull(mongoClient.GetDatabase(mongoDbSettings.MongoUrl.DatabaseName));
 
             }
             finally

@@ -38,8 +38,8 @@ namespace PonyUrl.Domain
 
         public Stat(Guid shortUrlId, string ipAddress, string referer, string userAgent) : this()
         {
-            Validation.ArgumentNotNullOrEmpty(shortUrlId);
-            Validation.ArgumentNotNullOrEmpty(ipAddress);
+            Check.ArgumentNotNullOrEmpty(shortUrlId);
+            Check.ArgumentNotNullOrEmpty(ipAddress);
 
             ShortUrlId = shortUrlId;
             IpAddress = ipAddress;

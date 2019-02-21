@@ -6,13 +6,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using PonyUrl.Infrastructure.MongoDb.Identity.Authorization;
-using PonyUrl.Infrastructure.MongoDb.Identity.Models;
-using PonyUrl.Infrastructure.MongoDb.Identity.Models.AccountViewModels;
+using PonyUrl.Infrastructure.AspNetCore;
+using PonyUrl.Infrastructure.AspNetCore.Authorization;
+using PonyUrl.Infrastructure.AspNetCore.Exceptions;
+using PonyUrl.Infrastructure.AspNetCore.Models;
+using PonyUrl.Infrastructure.AspNetCore.Models.AccountViewModels;
 
 namespace PonyUrl.Web.Api.Controllers
 {
-
+    /// <summary>
+    /// The controller is manages that user account and login operations.
+    /// </summary>
     [AllowAnonymous]
     public class AccountController : BaseController
     {
@@ -20,51 +24,63 @@ namespace PonyUrl.Web.Api.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         // private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
-        private readonly IConfiguration _configuration;
+        private readonly JwtTokenBuilder _jwtTokenBuilder;
 
+        /// <summary>
+        /// C'tor controller
+        /// </summary>
+        /// <param name="userManager">The manager is manages that user account operations. </param>
+        /// <param name="signInManager">The manager is manages that user login operations</param>
+        /// <param name="logger">Logger operations</param>
+        /// <param name="jwtTokenBuilder"></param>
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<AccountController> logger,
-            IConfiguration configuration
+            JwtTokenBuilder jwtTokenBuilder
         )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _configuration = configuration;
+            _jwtTokenBuilder = jwtTokenBuilder;
+         
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Login")]
+        [ApiExcepitonFilter]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
 
-            try
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+
+            if (!result.Succeeded)
             {
-
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-
-                if (result.Succeeded)
-                {
-                    var appUser = _userManager.Users.SingleOrDefault(q => q.Email == model.Email);
-
-                    var token = await JwtTokenBuilder.GenerateJwtToken(model.Email, appUser, _configuration);
-                    return Ok(token);
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("LOGIN_ERROR");
+                throw new ApiException("login_error");
             }
 
-            throw new ApplicationException("INVALID_LOGIN_ATTEMPT");
+            var appUser = _userManager.Users.SingleOrDefault(q => q.Email == model.Email);
+
+            var token = await _jwtTokenBuilder.GenerateJwtToken(model.Email, appUser);
+
+            return Ok(token);
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
+        [Route("Register")]
+        [ApiExcepitonFilter]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
             var user = new ApplicationUser
@@ -73,26 +89,18 @@ namespace PonyUrl.Web.Api.Controllers
                 Email = model.Email
             };
 
-            try
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
             {
-
-                var result = await _userManager.CreateAsync(user, model.Password);
-
-                if (result.Succeeded)
-                {
-                    await _signInManager.SignInAsync(user, false);
-                    var token = await JwtTokenBuilder.GenerateJwtToken(model.Email, user, _configuration);
-                    return Ok(token);
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("REGISTER_ERROR");
+                throw new ApiException("register_error");
             }
 
-            throw new ApplicationException("UNKNOWN_ERROR");
+            await _signInManager.SignInAsync(user, false);
+
+            var token = await _jwtTokenBuilder.GenerateJwtToken(model.Email, user);
+
+            return Ok(token);
         }
     }
 }

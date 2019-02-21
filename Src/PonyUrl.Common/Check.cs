@@ -2,7 +2,10 @@
 
 namespace PonyUrl.Common
 {
-    public static class Validation
+    /// <summary>
+    /// Helps with validation
+    /// </summary>
+    public static class Check
     {
         public static void ArgumentNotNull(object obj, string paramName = "")
         {
@@ -56,11 +59,12 @@ namespace PonyUrl.Common
             return Uri.TryCreate(url, UriKind.Absolute, out Uri uri);
         }
 
-
         public static void That<TException>(bool condition, string message = "") where TException : Exception
         {
             if (!condition)
+            {
                 throw (TException)Activator.CreateInstance(typeof(TException), message);
+            } 
         }
 
 
