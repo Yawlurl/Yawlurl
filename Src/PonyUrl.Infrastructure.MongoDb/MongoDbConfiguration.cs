@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PonyUrl.Domain;
-using PonyUrl.Infrastructure.MongoDb.Repository;
 
 namespace PonyUrl.Infrastructure.MongoDb
 {
@@ -10,7 +8,7 @@ namespace PonyUrl.Infrastructure.MongoDb
         private const string SectionName = nameof(MongoDbAppSettings); //"MongoDbAppSettings";
 
         public static void ConfigureMongoDb(this IServiceCollection services, IConfiguration configuration)
-        { 
+        {
             var settings = GetMongoDbAppSettings(configuration);
 
 
@@ -19,16 +17,13 @@ namespace PonyUrl.Infrastructure.MongoDb
 
             services.AddScoped(typeof(IMongoDbRepository<>), typeof(MongoDbRepository<>));
 
-            services.AddScoped<IShortUrlRepository, ShortUrlRepository>();
-            services.AddScoped<ISettingRepository, SettingRepository>();
-            services.AddScoped<IStatRepository, StatRepository>();
         }
 
         public static MongoDbAppSettings GetMongoDbAppSettings(IConfiguration configuration)
         {
             var mongoDbSettingsSection = configuration.GetSection(SectionName);
 
-           return mongoDbSettingsSection.Get<MongoDbAppSettings>();
+            return mongoDbSettingsSection.Get<MongoDbAppSettings>();
         }
 
     }

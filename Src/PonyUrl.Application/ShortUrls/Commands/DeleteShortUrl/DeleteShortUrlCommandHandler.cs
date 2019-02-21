@@ -17,7 +17,7 @@ namespace PonyUrl.Application.ShortUrls.Commands
 
         public async Task<Unit> Handle(DeleteShortUrlCommand request, CancellationToken cancellationToken)
         { 
-            Validation.ArgumentNotNull(request.Id, "ID cannot be null!");
+            Check.ArgumentNotNull(request.Id, "ID cannot be null!");
 
             await _shortUrlRepository.DeleteAsync(request.Id);
              

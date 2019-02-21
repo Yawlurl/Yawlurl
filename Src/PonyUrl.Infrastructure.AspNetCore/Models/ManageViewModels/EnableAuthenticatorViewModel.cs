@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
  
 
-namespace PonyUrl.Infrastructure.MongoDb.Identity.Models.ManageViewModels
+namespace PonyUrl.Infrastructure.AspNetCore.Models.ManageViewModels
 {
     public class EnableAuthenticatorViewModel
     {

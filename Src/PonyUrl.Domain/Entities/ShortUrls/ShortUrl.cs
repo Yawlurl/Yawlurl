@@ -16,7 +16,7 @@ namespace PonyUrl.Domain
 
         public ShortUrl(string longUrl)
         {
-            Validation.ArgumentNotUrl(longUrl);
+            Check.ArgumentNotUrl(longUrl);
 
             LongUrl = longUrl;
         }

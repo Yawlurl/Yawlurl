@@ -19,7 +19,7 @@ namespace PonyUrl.Infrastructure.MongoDb
 
         public MongoDbRepository(IMongoDbContext mongoDbContext)
         {
-            Validation.ArgumentNotNull(mongoDbContext);
+            Check.ArgumentNotNull(mongoDbContext);
 
             _mongoDbContext = mongoDbContext;
 
@@ -28,7 +28,7 @@ namespace PonyUrl.Infrastructure.MongoDb
 
         public virtual async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Validation.ArgumentNotNull(id);
+            Check.ArgumentNotNull(id);
             DeleteResult deleteResult = await Collection.DeleteOneAsync(r => r.Id.Equals(id), cancellationToken);
             return deleteResult.DeletedCount > 0;
         }
@@ -40,7 +40,7 @@ namespace PonyUrl.Infrastructure.MongoDb
 
         public virtual async Task<TEntity> GetAsync(Guid id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Validation.ArgumentNotNull(id);
+            Check.ArgumentNotNull(id);
 
             return (await Collection.FindAsync(r => r.Id.Equals(id), null, cancellationToken)).FirstOrDefault();
         }
@@ -60,7 +60,7 @@ namespace PonyUrl.Infrastructure.MongoDb
 
         public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Validation.ArgumentNotNull(entity);
+            Check.ArgumentNotNull(entity);
 
             await Collection.InsertOneAsync(entity);
 
@@ -70,7 +70,7 @@ namespace PonyUrl.Infrastructure.MongoDb
 
         public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Validation.ArgumentNotNull(entity);
+            Check.ArgumentNotNull(entity);
 
             return await Collection.FindOneAndReplaceAsync(e => e.Id.Equals(entity.Id), entity, null, cancellationToken);
         }

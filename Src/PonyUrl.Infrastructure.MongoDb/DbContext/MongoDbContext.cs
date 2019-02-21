@@ -7,8 +7,8 @@ namespace PonyUrl.Infrastructure.MongoDb
     {
         public MongoDbContext(string connectionString, string databaseName)
         {
-            Validation.ArgumentNotNullOrEmpty(connectionString);
-            Validation.ArgumentNotNullOrEmpty(databaseName);
+            Check.ArgumentNotNullOrEmpty(connectionString);
+            Check.ArgumentNotNullOrEmpty(databaseName);
 
             Client = new MongoClient(connectionString);
             Database = Client.GetDatabase(databaseName);
@@ -16,7 +16,7 @@ namespace PonyUrl.Infrastructure.MongoDb
 
         public MongoDbContext(MongoUrl mongoUrl)
         {
-            Validation.ArgumentNotNull(mongoUrl);
+            Check.ArgumentNotNull(mongoUrl);
 
             Client = new MongoClient(mongoUrl);
             Database = Client.GetDatabase(mongoUrl.DatabaseName);
@@ -24,7 +24,7 @@ namespace PonyUrl.Infrastructure.MongoDb
 
         public MongoDbContext(string mongoUrlString)
         {
-            Validation.ArgumentNotNullOrEmpty(mongoUrlString);
+            Check.ArgumentNotNullOrEmpty(mongoUrlString);
 
             var builder = new MongoUrlBuilder(mongoUrlString);
 
@@ -34,7 +34,7 @@ namespace PonyUrl.Infrastructure.MongoDb
 
         public MongoDbContext(IMongoDatabase mongoDatabase)
         {
-            Validation.ArgumentNotNull(mongoDatabase);
+            Check.ArgumentNotNull(mongoDatabase);
 
             Database = mongoDatabase;
             Client = mongoDatabase.Client;

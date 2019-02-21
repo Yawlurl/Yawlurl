@@ -14,7 +14,7 @@ namespace PonyUrl.Infrastructure.MongoDb.Repository
 
         public async Task<ShortUrl> GetByShortKeyAsync(string shortKey, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Validation.ArgumentNotNullOrEmpty(shortKey);
+            Check.ArgumentNotNullOrEmpty(shortKey);
 
             return (await Collection.FindAsync(s => s.ShortKey.Equals(shortKey), null, cancellationToken)).FirstOrDefault();
         }

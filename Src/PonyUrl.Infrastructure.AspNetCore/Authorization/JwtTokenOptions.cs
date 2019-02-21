@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace PonyUrl.Infrastructure.MongoDb.Identity.Authorization
+namespace PonyUrl.Infrastructure.AspNetCore.Authorization
 {
     public class JwtTokenOptions
     {

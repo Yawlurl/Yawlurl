@@ -10,7 +10,7 @@ namespace PonyUrl.Infrastructure.MongoDb
         public MongoUrl MongoUrl {
             get
             {
-                Validation.ArgumentNotNull(ConnectionString);
+                Check.ArgumentNotNull(ConnectionString);
 
                 var mongoUrlBuiler = new MongoUrlBuilder(ConnectionString);
 
@@ -27,7 +27,7 @@ namespace PonyUrl.Infrastructure.MongoDb
 
         public MongoDbSettings(string connectionString)
         {
-            Validation.ArgumentNotNull(connectionString);
+            Check.ArgumentNotNull(connectionString);
 
             ConnectionString = connectionString;
 

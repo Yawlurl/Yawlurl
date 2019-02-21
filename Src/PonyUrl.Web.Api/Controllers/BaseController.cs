@@ -5,7 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace PonyUrl.Web.Api.Controllers
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class BaseController : Controller
