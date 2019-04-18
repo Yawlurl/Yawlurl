@@ -8,5 +8,6 @@ namespace PonyUrl.Infrastructure.Redis.Models
     {
         public string Host { get; set; }
         public int DefaultDb { get; set; }
+        public int Port { get; set; }
     }
 }

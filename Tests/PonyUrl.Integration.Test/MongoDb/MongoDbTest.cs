@@ -9,7 +9,7 @@ using FluentAssertions;
 
 namespace PonyUrl.Integration.Test.MongoDb
 {
-    public class MongoDbTest
+    public class MongoDbTest : BaseTest
     {
         #region Properties
         private readonly TestEntity testEntity = new TestEntity()
@@ -18,25 +18,14 @@ namespace PonyUrl.Integration.Test.MongoDb
         };
         private readonly IMongoDbSettings _dbSettings;
         private readonly IMongoDbRepository<TestEntity> _mongoRepository;
-        private readonly ServiceProvider serviceProvider;
+
         #endregion
 
         #region C'tor
         public MongoDbTest()
         {
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
-                                                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
-            IConfigurationRoot configurationRoot = builder.Build();
-
-            var services = new ServiceCollection();
-
-            services.ConfigureMongoDb(configurationRoot);
-
-            serviceProvider = services.BuildServiceProvider();
-
-            _dbSettings = serviceProvider.GetService<IMongoDbSettings>();
-            _mongoRepository = serviceProvider.GetService<IMongoDbRepository<TestEntity>>();
+            _dbSettings = ServiceProvider.GetService<IMongoDbSettings>();
+            _mongoRepository = ServiceProvider.GetService<IMongoDbRepository<TestEntity>>();
 
         }
         #endregion
@@ -86,9 +75,9 @@ namespace PonyUrl.Integration.Test.MongoDb
             //DELETE
             (await _mongoRepository.DeleteAsync(entity.Id)).Should().BeTrue();
             (await _mongoRepository.GetAsync(entity.Id)).Should().BeNull();
-            
+
         }
 
-     
+
     }
 }

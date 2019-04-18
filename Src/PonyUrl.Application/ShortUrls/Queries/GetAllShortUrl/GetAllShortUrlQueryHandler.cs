@@ -8,7 +8,8 @@ namespace PonyUrl.Application.ShortUrls.Queries
 {
     public class GetAllShortUrlQueryHandler : IRequestHandler<GetAllShortUrlQuery, ShortUrlListViewModel>
     {
-        IShortUrlRepository _shortUrlRepository;
+        private readonly IShortUrlRepository _shortUrlRepository;
+
         public GetAllShortUrlQueryHandler(IShortUrlRepository shortUrlRepository)
         {
             _shortUrlRepository = shortUrlRepository;
@@ -25,8 +26,6 @@ namespace PonyUrl.Application.ShortUrls.Queries
             };
 
             return model;
-
-
         }
     }
 }

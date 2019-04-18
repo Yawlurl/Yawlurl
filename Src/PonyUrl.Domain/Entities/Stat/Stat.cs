@@ -34,8 +34,6 @@ namespace PonyUrl.Domain
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime UpdatedDate { get; set; }
 
-        
-
         public Stat(Guid shortUrlId, string ipAddress, string referer, string userAgent) : this()
         {
             Check.ArgumentNotNullOrEmpty(shortUrlId);

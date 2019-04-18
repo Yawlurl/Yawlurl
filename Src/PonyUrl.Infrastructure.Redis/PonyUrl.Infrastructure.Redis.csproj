@@ -11,4 +11,8 @@
     <PackageReference Include="StackExchange.Redis" Version="2.0.519" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PonyUrl.Common\PonyUrl.Common.csproj" />
+  </ItemGroup>
+
 </Project>
