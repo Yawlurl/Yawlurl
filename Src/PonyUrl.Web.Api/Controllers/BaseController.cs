@@ -10,10 +10,13 @@ namespace PonyUrl.Web.Api.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class BaseController : Controller
+    public abstract class BaseController : Controller
     {
         private IMediator _mediator;
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected IMediator Mediator => _mediator ?? (_mediator = HttpContext.RequestServices.GetService<IMediator>());
     }
 }

@@ -1,19 +1,21 @@
 ﻿using Newtonsoft.Json;
 using PonyUrl.Common;
+using PonyUrl.Core;
 using StackExchange.Redis;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PonyUrl.Infrastructure.Redis
 {
-    public class RedisManager
+    public class RedisManager : ICacheManager
     {
-        public string Host { get; set; }
-        public int Database { get; set; }
-        public int Port { get; set; }
+        public string Host { get; private set; }
+        public int Database { get; private set; }
+        public int Port { get; private set; }
 
         public TimeSpan DefaultCacheDuration => TimeSpan.FromSeconds(30);
-        private const string ShortUrlsKey = "shortuls";
+        private const string ShortUrlsKey = "short_urls";
         private static Lazy<ConnectionMultiplexer> lazyConnection;
 
         public RedisManager(string host, int database = 0, int port = 6379)
@@ -27,40 +29,56 @@ namespace PonyUrl.Infrastructure.Redis
             lazyConnection = new Lazy<ConnectionMultiplexer>(() => { return ConnectionMultiplexer.Connect(Host); });
         }
 
-        public bool IsConnected { get { return GetConnection().IsConnected; } }
-
-
-        public ConnectionMultiplexer GetConnection()
+        #region Private Methods
+        private ConnectionMultiplexer GetConnection()
         {
             return lazyConnection.Value;
         }
 
-        public IDatabase GetDatabase()
+        private IDatabase GetDatabase()
         {
             return GetConnection().GetDatabase(Database);
         }
 
-        public IDatabase DbInstance
+        private IDatabase DbInstance
         {
             get
             {
                 return GetDatabase();
             }
         }
-        /// <summary>
-        /// Drop that database
-        /// </summary>
-        /// <returns></returns>
-        public async Task FlushDb()
+
+        private async Task FlushDb()
         {
             await GetConnection().GetServer(Host, Port).FlushDatabaseAsync(Database, CommandFlags.PreferMaster);
         }
+        private async Task<bool> SetHashKey(string key, string field, string value)
+        {
+            if (Check.IsNullOrEmpty(key) || Check.IsNullOrEmpty(field)) return false;
+
+            return await DbInstance.HashSetAsync(key, field, value, When.NotExists, CommandFlags.PreferMaster);
+        }
+
+        private async Task<string> GetHashKeyValue(string key, string field)
+        {
+            if (Check.IsNullOrEmpty(key) || Check.IsNullOrEmpty(field)) return string.Empty;
+
+            return await DbInstance.HashGetAsync(key, field, CommandFlags.PreferSlave);
+        }
+
+        private async Task<bool> IsExistHashKeyField(string key, string field)
+        {
+            if (Check.IsNullOrEmpty(key) || Check.IsNullOrEmpty(field)) return false;
+
+            return await DbInstance.HashExistsAsync(key, field, CommandFlags.PreferSlave);
+        }
+        #endregion
 
         /// <summary>
-        /// Get value by key
+        /// 
         /// </summary>
-        /// <typeparam name="T">Generic type</typeparam>
-        /// <param name="key">Unique Identifier</param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
         /// <returns></returns>
         public async Task<T> Get<T>(string key)
         {
@@ -84,7 +102,7 @@ namespace PonyUrl.Infrastructure.Redis
             return result;
         }
         /// <summary>
-        /// Add or update value by key
+        /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
@@ -102,7 +120,7 @@ namespace PonyUrl.Infrastructure.Redis
             return await DbInstance.SetAddAsync(key, jsonValue, CommandFlags.PreferMaster);
         }
         /// <summary>
-        /// Delete item by key
+        /// 
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
@@ -114,41 +132,84 @@ namespace PonyUrl.Infrastructure.Redis
 
         }
         /// <summary>
-        /// Add 
+        /// 
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="field"></param>
-        /// <param name="value"></param>
         /// <returns></returns>
-        public async Task<bool> SetHashKey(string key, string field, string value)
+        public async Task<bool> IsExist(string key)
         {
-            if (Check.IsNullOrEmpty(key) || Check.IsNullOrEmpty(field)) return false;
+            Check.ArgumentNotNullOrEmpty(key);
 
-            return await DbInstance.HashSetAsync(key, field, value, When.NotExists, CommandFlags.PreferMaster);
+            return await DbInstance.KeyExistsAsync(key, CommandFlags.PreferSlave);
         }
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="field"></param>
+        /// <param name="shortKey"></param>
         /// <returns></returns>
-        public async Task<string> GetHashKeyValue(string key, string field)
+        public async Task<string> GetUrl(string shortKey)
         {
-            if (Check.IsNullOrEmpty(key) || Check.IsNullOrEmpty(field)) return string.Empty;
-
-            return await DbInstance.HashGetAsync(key, field, CommandFlags.PreferSlave);
+            return await GetHashKeyValue(ShortUrlsKey, shortKey);
         }
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="field"></param>
+        /// <param name="shortKey"></param>
+        /// <param name="url"></param>
         /// <returns></returns>
-        public async Task<bool> IsExistHashKeyField(string key, string field)
+        public async Task<bool> SetUrl(string shortKey, string url)
         {
-            if (Check.IsNullOrEmpty(key) || Check.IsNullOrEmpty(field)) return false;
-            
-            return await DbInstance.HashExistsAsync(key, field, CommandFlags.PreferSlave);
+            return await SetHashKey(ShortUrlsKey, shortKey, url);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="shortKey"></param>
+        /// <returns></returns>
+        public async Task<bool> IsExistUrl(string shortKey)
+        {
+            return await IsExistHashKeyField(ShortUrlsKey, shortKey);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task Clear()
+        {
+            await FlushDb();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> IsConnected()
+        {
+            return await Task.FromResult(GetConnection().IsConnected);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> ClearUrls()
+        {
+            return await Delete(ShortUrlsKey);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> IsExistUrls()
+        {
+            return await DbInstance.KeyExistsAsync(ShortUrlsKey, CommandFlags.PreferSlave);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="shortKey"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteUrl(string shortKey)
+        {
+            return await DbInstance.HashDeleteAsync(ShortUrlsKey, shortKey, CommandFlags.PreferMaster);
         }
     }
 }

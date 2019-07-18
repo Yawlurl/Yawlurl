@@ -18,7 +18,7 @@ namespace PonyUrl.Application.ShortUrls.Queries
         public async Task<ShortUrlViewModel> Handle(GetShortUrlQuery request, CancellationToken cancellationToken)
         {
 
-            var entity = await _shortUrlRepository.GetAsync(request.Id);
+            var entity = await _shortUrlRepository.GetByShortKeyAsync(request.ShortKey);
 
             Check.ArgumentNotNull(entity, "ShortUrl cannot find!");
 

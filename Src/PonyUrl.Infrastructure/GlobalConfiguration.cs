@@ -4,9 +4,13 @@ using PonyUrl.Core;
 using PonyUrl.Domain;
 using PonyUrl.Infrastructure.MongoDb;
 using PonyUrl.Infrastructure.MongoDb.Repository;
+using PonyUrl.Infrastructure.Redis;
 
 namespace PonyUrl.Infrastructure
 {
+    /// <summary>
+    /// All configurations 
+    /// </summary>
     public static class GlobalConfiguration
     {
         public static void ConfigureGlobal(this IServiceCollection services, IConfiguration configuration)
@@ -16,6 +20,9 @@ namespace PonyUrl.Infrastructure
 
             //MongoDb Congiguration
             services.ConfigureMongoDb(configuration);
+
+            //Redis Configuration
+            services.ConfigureRedisDb(configuration);
 
             //Managers
             services.AddScoped<IShortKeyManager, ShortKeyManager>();

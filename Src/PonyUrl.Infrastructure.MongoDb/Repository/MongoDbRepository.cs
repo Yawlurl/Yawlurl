@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace PonyUrl.Infrastructure.MongoDb
 {
@@ -35,7 +36,7 @@ namespace PonyUrl.Infrastructure.MongoDb
 
         public virtual async Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Collection.AsQueryable().ToListAsync();
+            return await Collection.AsQueryable().ToListAsync(cancellationToken);
         }
 
         public virtual async Task<TEntity> GetAsync(Guid id, CancellationToken cancellationToken = default(CancellationToken))
@@ -48,7 +49,7 @@ namespace PonyUrl.Infrastructure.MongoDb
 
         public virtual async Task<long> GetCountAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await this.Collection.EstimatedDocumentCountAsync();
+            return await this.Collection.EstimatedDocumentCountAsync(null, cancellationToken);
         }
 
 
@@ -62,7 +63,7 @@ namespace PonyUrl.Infrastructure.MongoDb
         {
             Check.ArgumentNotNull(entity);
 
-            await Collection.InsertOneAsync(entity);
+            await Collection.InsertOneAsync(entity, null, cancellationToken);
 
             return await GetAsync(entity.Id);
         }
@@ -73,6 +74,20 @@ namespace PonyUrl.Infrastructure.MongoDb
             Check.ArgumentNotNull(entity);
 
             return await Collection.FindOneAndReplaceAsync(e => e.Id.Equals(entity.Id), entity, null, cancellationToken);
+        }
+
+        public virtual async Task<List<TEntity>> GetAllPaginationAsync(int pageIndex, int count, CancellationToken cancellationToken = default)
+        {
+            return await Task.FromResult(Collection.AsQueryable().Skip(pageIndex).Take(count).ToList());
+        }
+
+        public async Task<List<TEntity>> BulkInsertAsync(List<TEntity> entities, CancellationToken cancellationToken = default)
+        {
+            Check.ArgumentNotNull(entities);
+
+            await Collection.InsertManyAsync(entities, null, cancellationToken);
+
+            return entities;
         }
     }
 }

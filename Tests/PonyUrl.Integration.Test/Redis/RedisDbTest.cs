@@ -4,55 +4,75 @@ using PonyUrl.Infrastructure.Redis;
 using FluentAssertions;
 using System.Threading.Tasks;
 using System;
+using PonyUrl.Core;
 
 namespace PonyUrl.Integration.Test.Redis
 {
     public class RedisDbTest : BaseTest
     {
         const string rootUrl = "http://localhost:8080";
+
         readonly RedisTestModel model = new RedisTestModel(rootUrl);
 
-        private readonly RedisManager redisManager;
+        private readonly ICacheManager cacheManager;
 
         public RedisDbTest()
         {
-            redisManager = ServiceProvider.GetService<RedisManager>();
+            cacheManager = ServiceProvider.GetService<ICacheManager>();
 
-            Task.FromResult(redisManager.FlushDb()).Wait();
+            Task.FromResult(cacheManager.Clear()).Wait();
         }
 
         [Fact]
-        public void RedisDb_Conntection_Test()
+        public async Task RedisDb_Conntection_Test()
         {
-            redisManager.IsConnected.Should().BeTrue();
+            (await cacheManager.IsConnected()).Should().BeTrue();
         }
 
         [Fact]
         public async Task RedisDb_Add_Key_Test()
         {
-            (await redisManager.Set(Guid.NewGuid().ToString(), model)).Should().BeTrue();
+            string key = "TestKey_" + Guid.NewGuid();
+
+            //Remove TestKey
+            (await cacheManager.Delete(key)).Should().BeFalse();
+
+            //Check TestKey
+            (await cacheManager.IsExist(key)).Should().BeFalse();
+
+            //Add TestKey
+            (await cacheManager.Set(key, model)).Should().BeTrue();
+
+            //Check TestKey
+            (await cacheManager.IsExist(key)).Should().BeTrue();
+
         }
 
         [Fact]
         public async Task RedisDb_Hash_Key_Test()
         {
-            const string collection = "ShortUrls";
-            const string key = "12000";
+            const string key = "120";
 
-            await redisManager.Delete(collection);
+            if(await cacheManager.IsExistUrls())
+            {
+                //Clear Collection
+                (await cacheManager.ClearUrls()).Should().BeTrue();
+            }
+           
 
-            var keys = System.Linq.Enumerable.Range(10000, 15000);
+            var keys = System.Linq.Enumerable.Range(100, 150);
 
+            //Add ShortUrls
             foreach (var k in keys)
             {
-                (await redisManager.SetHashKey(collection, k.ToString(), $"{model.Url}/{k}")).Should().BeTrue();
+                (await cacheManager.SetUrl(k.ToString(), $"{model.Url}/{k}")).Should().BeTrue();
             }
 
+            //Check Url
+            (await cacheManager.IsExistUrl(key)).Should().BeTrue();
 
-            (await redisManager.IsExistHashKeyField(collection, key)).Should().BeTrue();
-
-            (await redisManager.GetHashKeyValue(collection, key)).Should().Be($"{rootUrl}/{key}");
-
+            //Get Url
+            (await cacheManager.GetUrl(key)).Should().Be($"{rootUrl}/{key}");
         }
     }
 }

@@ -20,6 +20,8 @@ namespace PonyUrl.Core
 
         Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
 
+        Task<List<TEntity>> BulkInsertAsync(List<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken));
+
         Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<bool> DeleteAsync(TKey id, CancellationToken cancellationToken = default(CancellationToken));
@@ -29,6 +31,8 @@ namespace PonyUrl.Core
         Task<List<TEntity>> GetManyAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<long> GetCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<List<TEntity>> GetAllPaginationAsync(int pageIndex, int count, CancellationToken cancellationToken = default(CancellationToken));
     }
 
     /// <summary>

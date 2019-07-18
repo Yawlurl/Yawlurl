@@ -1,17 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Newtonsoft.Json;
 using PonyUrl.Infrastructure.AspNetCore.Exceptions;
 using System;
-using System.Net.Http;
-using System.Text;
 
 namespace PonyUrl.Infrastructure.AspNetCore
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ApiExcepitonFilterAttribute : ExceptionFilterAttribute
     {
-
-    
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
         public override void OnException(ExceptionContext context)
         {
             ApiErrorModel apiErrorModel = null;

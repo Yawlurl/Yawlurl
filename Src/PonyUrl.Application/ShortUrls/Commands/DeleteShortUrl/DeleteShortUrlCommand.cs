@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace PonyUrl.Application.ShortUrls.Commands
 {
     public class DeleteShortUrlCommand : IRequest 
     {
-        public Guid Id { get; set; }
+        [Required]
+        public string ShortKey { get; set; }
     }
 }

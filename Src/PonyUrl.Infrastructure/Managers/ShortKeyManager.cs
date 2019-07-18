@@ -18,7 +18,7 @@ namespace PonyUrl.Infrastructure
     {
         private readonly IShortUrlRepository _shortUrlRepository;
         private readonly ISettingManager _settingManager;
-
+       
         public ShortKeyManager(IShortUrlRepository shortUrlRepository, ISettingManager settingManager)
         {
             _shortUrlRepository = shortUrlRepository;

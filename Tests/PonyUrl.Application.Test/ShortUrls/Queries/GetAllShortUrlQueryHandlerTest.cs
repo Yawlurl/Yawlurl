@@ -12,25 +12,31 @@ using PonyUrl.Core;
 
 namespace PonyUrl.Application.Test.ShortUrls.Queries
 {
-    public class GetAllShortUrlQueryHandlerTest : TestBase
+    public class GetAllShortUrlQueryHandlerTest : BaseTest
     {
         private readonly GetAllShortUrlQueryHandler _queryhandler;
         private readonly CreateShortUrlCommandHandler _commandHandler;
 
         public GetAllShortUrlQueryHandlerTest()
         {
-            _commandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(), That<IShortKeyManager>());
-            _queryhandler = new GetAllShortUrlQueryHandler(That<IShortUrlRepository>());
+            _commandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(), 
+                                                               That<IShortKeyManager>(),
+                                                               That<ICacheManager>());
+
+            _queryhandler = new GetAllShortUrlQueryHandler(That<IShortUrlRepository>(), That<ICacheManager>());
         }
 
         [Fact]
         public async Task GetAllShortUrl_Test()
         {
-            var id = await _commandHandler.Handle(new CreateShortUrlCommand()
+            var shortUrl = await _commandHandler.Handle(new CreateShortUrlCommand()
             {
                 LongUrl = "http://www.google.com"
             },
             CancellationToken.None);
+
+            shortUrl.Should().NotBeNull();
+            shortUrl.ShortKey.Should().NotBeNullOrEmpty();
 
             var result = await _queryhandler.Handle(new GetAllShortUrlQuery(), CancellationToken.None);
 

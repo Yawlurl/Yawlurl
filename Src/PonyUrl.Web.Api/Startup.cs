@@ -4,17 +4,20 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using AspNetCore.Identity.Mongo;
 using MediatR;
 using MediatR.Pipeline;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PonyUrl.Application.ShortUrls.Commands;
 using PonyUrl.Application.ShortUrls.Queries;
+using PonyUrl.Infrastructure;
 using PonyUrl.Infrastructure.AspNetCore;
-using PonyUrl.Infrastructure.MongoDb;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -49,18 +52,24 @@ namespace PonyUrl.Web.Api
         {
             // Swagger
             services.AddSwaggerGen(ConfigureSwaggerOptions);
-
+            
             // Add MediatR
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>)); 
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>));
             services.AddMediatR(typeof(GetShortUrlQueryHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(GetAllShortUrlQueryHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(CreateShortUrlCommandHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(DeleteShortUrlCommandHandler).GetTypeInfo().Assembly);
+
 
             //Add AspNetCore
             services.ConfigureAspNetCore(Configuration);
 
-            // MongoDb
-            services.ConfigureMongoDb(Configuration);
+            //Add global configuration
+            services.ConfigureGlobal(Configuration);
 
-         
+            //Add Routing
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -69,7 +78,10 @@ namespace PonyUrl.Web.Api
             {
                 options.Filters.Add(typeof(ApiExcepitonFilterAttribute));
             });
+
+            
         }
+
 
         private void ConfigureSwaggerOptions(SwaggerGenOptions options)
         {
@@ -82,9 +94,9 @@ namespace PonyUrl.Web.Api
 
             // Swagger 2.+ support
             var security = new Dictionary<string, IEnumerable<string>>
-                {
-                    {"Bearer", new string[] { }},
-                };
+            {
+                {"Bearer", new string[] { }},
+            };
 
             options.AddSecurityDefinition("Bearer", new ApiKeyScheme
             {
@@ -96,9 +108,9 @@ namespace PonyUrl.Web.Api
             options.AddSecurityRequirement(security);
 
             // Set the comments path for the Swagger JSON and UI.
-            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            options.IncludeXmlComments(xmlPath);
+            //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            //options.IncludeXmlComments(xmlPath);
         }
         /// <summary>
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -120,13 +132,14 @@ namespace PonyUrl.Web.Api
             // ===== Use Authentication ======
             app.UseAuthentication();
 
-            app.UseHttpsRedirection();
+            
+            //app.UseHttpsRedirection();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    template: "{controller}/{action}/{id?}");
             });
 
 
@@ -134,7 +147,7 @@ namespace PonyUrl.Web.Api
             app.UseSwaggerUI(s =>
             {
                 s.SwaggerEndpoint("/swagger/v1/swagger.json", "PonyUrl API");
-                s.RoutePrefix = string.Empty;
+                //s.RoutePrefix = string.Empty;
             });
         }
     }

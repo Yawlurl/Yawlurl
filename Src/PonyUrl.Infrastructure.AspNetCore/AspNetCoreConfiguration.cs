@@ -46,6 +46,9 @@ namespace PonyUrl.Infrastructure.AspNetCore
             {
                 options.ConnectionString = MongoDbConfiguration.GetMongoDbAppSettings(configuration).ConnectionString;
             });
+
+
         }
+
     }
 }

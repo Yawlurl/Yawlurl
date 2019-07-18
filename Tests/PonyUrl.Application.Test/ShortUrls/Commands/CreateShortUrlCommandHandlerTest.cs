@@ -10,13 +10,13 @@ using PonyUrl.Core;
 
 namespace PonyUrl.Application.Test.ShortUrls.Commands
 {
-    public class CreateShortUrlCommandHandlerTest : TestBase
+    public class CreateShortUrlCommandHandlerTest : BaseTest
     {
         private readonly CreateShortUrlCommandHandler _commandHandler;
 
         public CreateShortUrlCommandHandlerTest()
         {
-            _commandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(), That<IShortKeyManager>());
+            _commandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(), That<IShortKeyManager>(), That<ICacheManager>());
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace PonyUrl.Application.Test.ShortUrls.Commands
 
             var result = await _commandHandler.Handle(command, CancellationToken.None);
 
-            result.Should<Guid>();
+            result.Should().NotBeNull();
 
         }
 
@@ -44,6 +44,6 @@ namespace PonyUrl.Application.Test.ShortUrls.Commands
             await Assert.ThrowsAsync<ApplicationException>(() => _commandHandler.Handle(command, CancellationToken.None));
         }
 
-     
+
     }
 }

@@ -6,13 +6,13 @@ using System.IO;
 
 namespace PonyUrl.Application.Test
 {
-    public class TestBase
+    public class BaseTest
     {
         public readonly MongoDbContext _mongoDbContext;
         public readonly ServiceCollection services;
         public readonly ServiceProvider serviceProvider;
 
-        public TestBase()
+        public BaseTest()
         {
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                                                     .AddJsonFile("appsettings.json",
@@ -23,7 +23,7 @@ namespace PonyUrl.Application.Test
             services = new ServiceCollection();
 
             services.ConfigureGlobal(configurationRoot);
-
+            
             serviceProvider = services.BuildServiceProvider();
         }
 

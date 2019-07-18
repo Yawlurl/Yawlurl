@@ -1,7 +1,7 @@
 ﻿using PonyUrl.Infrastructure.Redis.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using PonyUrl.Core;
 
 namespace PonyUrl.Infrastructure.Redis
 {
@@ -17,7 +17,7 @@ namespace PonyUrl.Infrastructure.Redis
 
             configuration.GetSection(sectionName).Bind(redisConfig);
 
-            services.AddSingleton(new RedisManager(redisConfig.Host, redisConfig.DefaultDb, redisConfig.Port));
+            services.AddSingleton<ICacheManager>(new RedisManager(redisConfig.Host, redisConfig.DefaultDb, redisConfig.Port));
         }
     }
 }

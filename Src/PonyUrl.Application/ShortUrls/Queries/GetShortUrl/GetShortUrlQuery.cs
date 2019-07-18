@@ -5,6 +5,6 @@ namespace PonyUrl.Application.ShortUrls.Queries
 {
     public class GetShortUrlQuery : IRequest<ShortUrlViewModel>
     {
-        public Guid Id { get; set; }
+        public string ShortKey { get; set; }
     }
 }

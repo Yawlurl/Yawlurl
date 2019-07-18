@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PonyUrl.Infrastructure.AspNetCore;
 using PonyUrl.Infrastructure.AspNetCore.Authorization;
@@ -53,7 +51,7 @@ namespace PonyUrl.Web.Api.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Login")]
+        [Route("login")]
         [ApiExcepitonFilter]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
@@ -79,7 +77,7 @@ namespace PonyUrl.Web.Api.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Register")]
+        [Route("register")]
         [ApiExcepitonFilter]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
