@@ -7,30 +7,30 @@ using PonyUrl.Core;
 
 namespace PonyUrl.Application.ShortUrls.Commands
 {
-    public class DeleteShortUrlCommandHandler :   IRequestHandler<DeleteShortUrlCommand>
+    public class DeleteShortUrlCommandHandler : IRequestHandler<DeleteShortUrlCommand>
     {
-        IShortUrlRepository _shortUrlRepository;
-        ICacheManager _cacheManager;
-        public DeleteShortUrlCommandHandler(IShortUrlRepository shortUrlRepository,ICacheManager cacheManager)  
+        private readonly IShortUrlRepository _shortUrlRepository;
+        private readonly ICacheManager _cacheManager;
+        private readonly IMediator _mediator;
+
+        public DeleteShortUrlCommandHandler(IShortUrlRepository shortUrlRepository, ICacheManager cacheManager, IMediator mediator)
         {
             _shortUrlRepository = shortUrlRepository;
             _cacheManager = cacheManager;
+            _mediator = mediator;
         }
 
         public async Task<Unit> Handle(DeleteShortUrlCommand request, CancellationToken cancellationToken)
-        { 
+        {
             Check.ArgumentNotNullOrEmpty(request.ShortKey);
             
-            //Get entity
-            var shortUrl = await _shortUrlRepository.GetByShortKeyAsync(request.ShortKey);
-            
-            //Delete from db
-            var deleteResult = await _shortUrlRepository.DeleteAsync(shortUrl.Id);
-             
             //Delete from cache
-            if(deleteResult)
+            if (await _cacheManager.DeleteUrl(request.ShortKey))
             {
-                await _cacheManager.DeleteUrl(request.ShortKey);
+                //Get entity
+                var shortUrl = await _shortUrlRepository.GetByShortKeyAsync(request.ShortKey);
+
+                await _mediator.Publish(new ShortUrlDeleted { ShortUrl = shortUrl });
             }
 
             return Unit.Value;
