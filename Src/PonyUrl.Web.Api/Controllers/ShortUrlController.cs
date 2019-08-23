@@ -8,21 +8,23 @@ using PonyUrl.Application.ShortUrls.Commands.BulkCreateShortUrl;
 using PonyUrl.Application.ShortUrls.Queries;
 using PonyUrl.Common;
 using PonyUrl.Infrastructure.AspNetCore;
+using System.Linq;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace PonyUrl.Web.Api.Controllers
 {
     /// <summary>
-    /// 
-    /// </summary>
-    [AllowAnonymous]
+    /// All ShortUrl operations
+    /// </summary>    
     [ApiExcepitonFilter]
     public class ShortUrlController : BaseController
     {
         /// <summary>
-        /// 
+        /// Check api status
         /// </summary>
         /// <returns></returns>
         [HttpGet("ping")]
+        [AllowAnonymous]
         public IActionResult Ping()
         {
             return Ok(new { Result = true, UtcDateTime = DateTime.UtcNow });
@@ -33,8 +35,11 @@ namespace PonyUrl.Web.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("get-all")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult<ShortUrlListViewModel>> GetAll(int skip, int limit)
         {
+            
+
             return Ok(await Mediator.Send(new GetAllShortUrlQuery(skip, limit)));
         }
 
@@ -45,10 +50,18 @@ namespace PonyUrl.Web.Api.Controllers
         /// <param name="key"></param>
         /// <returns></returns>
         [HttpGet("{key}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Get(string key)
         {
             if (Check.IsNullOrEmpty(key))
                 return BadRequest();
+
+            var user = HttpContext.User;
+
+            var claimsCount = user.Claims.Count();
+
+            var email = user.HasClaim(h => h.Type == JwtRegisteredClaimNames.Email) ? 
+                user.Claims.FirstOrDefault(h => h.Type == JwtRegisteredClaimNames.Email).Value : "";
 
             return Ok(await Mediator.Send(new GetShortUrlQuery { ShortKey = key }));
         }
@@ -57,8 +70,9 @@ namespace PonyUrl.Web.Api.Controllers
         /// 
         /// </summary>
         /// <param name="command"></param>
-        /// <returns></returns>        
+        /// <returns></returns>
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateShortUrlCommand command)
@@ -74,6 +88,7 @@ namespace PonyUrl.Web.Api.Controllers
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost("bulk-create")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> BulkCreate([FromBody] BulkCreateShortUrlCommand command)
@@ -90,6 +105,7 @@ namespace PonyUrl.Web.Api.Controllers
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpDelete]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([FromBody] DeleteShortUrlCommand command)

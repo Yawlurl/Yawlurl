@@ -16,9 +16,19 @@ namespace PonyUrl.Domain
 
         public ShortUrl(string longUrl)
         {
-            Check.ArgumentNotUrl(longUrl);
+            Check.That<DomainException>(Check.IsNotNullOrEmpty(longUrl), "longUrl is required!");
 
             LongUrl = longUrl;
+        }
+
+        public void Boost()
+        {
+            Hits += 1;
+        }
+
+        public void ResetBoost()
+        {
+            Hits = 0;
         }
     }
 }

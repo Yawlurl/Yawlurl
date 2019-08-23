@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Serialization;
 using PonyUrl.Application.ShortUrls.Commands;
 using PonyUrl.Application.ShortUrls.Queries;
 using PonyUrl.Infrastructure;
@@ -79,7 +80,6 @@ namespace PonyUrl.Web.Api
                 options.Filters.Add(typeof(ApiExcepitonFilterAttribute));
             });
 
-            
         }
 
 
@@ -129,7 +129,7 @@ namespace PonyUrl.Web.Api
                 app.UseHsts();
             }
 
-            // ===== Use Authentication ======
+            //// ===== Use Authentication ======
             app.UseAuthentication();
 
             

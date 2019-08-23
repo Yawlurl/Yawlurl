@@ -56,7 +56,7 @@ namespace PonyUrl.Infrastructure.Redis
         {
             if (Check.IsNullOrEmpty(key) || Check.IsNullOrEmpty(field)) return false;
 
-            return await DbInstance.HashSetAsync(key, field, value, When.NotExists, CommandFlags.PreferMaster);
+            return await DbInstance.HashSetAsync(key, field, value, When.Always, CommandFlags.PreferMaster);
         }
 
         private async Task<string> GetHashKeyValue(string key, string field)
@@ -91,7 +91,7 @@ namespace PonyUrl.Infrastructure.Redis
 
             if (await DbInstance.KeyExistsAsync(key))
             {
-                var redisValue = await DbInstance.StringGetAsync(key, CommandFlags.PreferSlave);
+                var redisValue = await DbInstance.StringGetAsync(key, CommandFlags.PreferMaster);
 
                 if (redisValue.HasValue)
                 {
@@ -140,7 +140,7 @@ namespace PonyUrl.Infrastructure.Redis
         {
             Check.ArgumentNotNullOrEmpty(key);
 
-            return await DbInstance.KeyExistsAsync(key, CommandFlags.PreferSlave);
+            return await DbInstance.KeyExistsAsync(key, CommandFlags.PreferMaster);
         }
         /// <summary>
         /// 

@@ -15,12 +15,16 @@ namespace PonyUrl.Application.ShortUrls.Commands
         private readonly IShortKeyManager _shortKeyManager;
         private readonly CreateShortUrlValidator validator;
         private readonly ICacheManager _cacheManager;
-
-        public CreateShortUrlCommandHandler(IShortUrlRepository shortUrlRepository, IShortKeyManager shortKeyManager, ICacheManager cacheManager)
+        private readonly IMediator _mediator;
+        public CreateShortUrlCommandHandler(IShortUrlRepository shortUrlRepository, 
+                                            IShortKeyManager shortKeyManager, 
+                                            ICacheManager cacheManager, 
+                                            IMediator mediator)
         {
             _shortUrlRepository = shortUrlRepository;
             _shortKeyManager = shortKeyManager;
             _cacheManager = cacheManager;
+            _mediator = mediator;
             validator = new CreateShortUrlValidator();
         }
 
@@ -39,15 +43,13 @@ namespace PonyUrl.Application.ShortUrls.Commands
                 ShortKey = await _shortKeyManager.GenerateShortKeyRandomAsync(cancellationToken)
             };
 
-            //Save to database
-            var result = await _shortUrlRepository.InsertAsync(shortUrl, cancellationToken);
-
-            Check.ArgumentNotNullOrEmpty(result.Id);
-
             //Add to cache
-            await _cacheManager.SetUrl(result.ShortKey, result.LongUrl);
+            await _cacheManager.SetUrl(shortUrl.ShortKey, shortUrl.LongUrl);
 
-            return new ShortUrlDto() { ShortKey = result.ShortKey, LongUrl = result.LongUrl };
+            //Created Event
+            await _mediator.Publish(new ShortUrlCreated { ShortUrl = shortUrl }, cancellationToken);
+
+            return new ShortUrlDto() { ShortKey = shortUrl.ShortKey, LongUrl = shortUrl.LongUrl };
         }
     }
 }

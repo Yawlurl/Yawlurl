@@ -16,11 +16,11 @@ namespace PonyUrl.Web.Api.Controllers
     /// The controller is manages that user account and login operations.
     /// </summary>
     [AllowAnonymous]
+    [ApiExcepitonFilter]
     public class AccountController : BaseController
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        // private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly JwtTokenBuilder _jwtTokenBuilder;
 
@@ -42,17 +42,16 @@ namespace PonyUrl.Web.Api.Controllers
             _signInManager = signInManager;
             _logger = logger;
             _jwtTokenBuilder = jwtTokenBuilder;
-         
+
         }
 
         /// <summary>
-        /// 
+        /// Login user
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("login")]
-        [ApiExcepitonFilter]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
 
@@ -60,7 +59,7 @@ namespace PonyUrl.Web.Api.Controllers
 
             if (!result.Succeeded)
             {
-                throw new ApiException("login_error");
+                throw new ApiException("Login Error");
             }
 
             var appUser = _userManager.Users.SingleOrDefault(q => q.Email == model.Email);
@@ -72,13 +71,12 @@ namespace PonyUrl.Web.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Register new user
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("register")]
-        [ApiExcepitonFilter]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
             var user = new ApplicationUser
@@ -91,7 +89,7 @@ namespace PonyUrl.Web.Api.Controllers
 
             if (!result.Succeeded)
             {
-                throw new ApiException("register_error");
+                throw new ApiException("Register Error", 400, result?.Errors?.Select(e => new ErrorModel { Code = e.Code, Description = e.Description }).ToList());
             }
 
             await _signInManager.SignInAsync(user, false);

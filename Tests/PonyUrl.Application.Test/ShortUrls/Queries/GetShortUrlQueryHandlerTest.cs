@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using MediatR;
 using PonyUrl.Application.ShortUrls.Commands;
 using PonyUrl.Application.ShortUrls.Queries;
 using PonyUrl.Core;
@@ -20,7 +21,8 @@ namespace PonyUrl.Application.Test.ShortUrls.Queries
 
             _commandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(),
                                                                That<IShortKeyManager>(),
-                                                               That<ICacheManager>());
+                                                               That<ICacheManager>(),
+                                                               That<IMediator>());
         }
 
         [Fact]

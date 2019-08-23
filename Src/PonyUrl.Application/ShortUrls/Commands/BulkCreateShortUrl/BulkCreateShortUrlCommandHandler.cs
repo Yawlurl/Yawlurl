@@ -16,14 +16,17 @@ namespace PonyUrl.Application.ShortUrls.Commands.BulkCreateShortUrl
         private readonly IShortKeyManager _shortKeyManager;
         private readonly BulkCreateShortUrlValidator validator;
         private readonly ICacheManager _cacheManager;
+        private readonly IMediator _mediator;
 
-        public BulkCreateShortUrlCommandHandler(IShortUrlRepository shortUrlRepository, 
-                                                IShortKeyManager shortKeyManager, 
-                                                ICacheManager cacheManager)
+        public BulkCreateShortUrlCommandHandler(IShortUrlRepository shortUrlRepository,
+                                                IShortKeyManager shortKeyManager,
+                                                ICacheManager cacheManager,
+                                                IMediator mediator)
         {
             _shortUrlRepository = shortUrlRepository;
             _shortKeyManager = shortKeyManager;
             _cacheManager = cacheManager;
+            _mediator = mediator;
             validator = new BulkCreateShortUrlValidator();
         }
 
@@ -52,20 +55,17 @@ namespace PonyUrl.Application.ShortUrls.Commands.BulkCreateShortUrl
                 shortUrls.Add(shortUrl);
             }
 
-            //Save to database
-            var savedShortUrls = await _shortUrlRepository.BulkInsertAsync(shortUrls, cancellationToken);
-
             //Add to cache
-            foreach (var shortUrl in savedShortUrls)
+            foreach (var shortUrl in shortUrls)
             {
-                
                 await _cacheManager.SetUrl(shortUrl.ShortKey, shortUrl.LongUrl);
-
-                Check.ArgumentNotNullOrEmpty(shortUrl.Id);
 
                 result.Add(new ShortUrlDto() { ShortKey = shortUrl.ShortKey, LongUrl = shortUrl.LongUrl });
             }
-           
+
+            //Publish Event
+            await _mediator.Publish(new ShortUrlsCreated { ShortUrls = shortUrls });
+
             return result;
         }
     }

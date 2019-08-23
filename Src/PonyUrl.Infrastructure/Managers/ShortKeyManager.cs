@@ -16,13 +16,13 @@ namespace PonyUrl.Infrastructure
     /// </summary>
     public class ShortKeyManager : IShortKeyManager
     {
-        private readonly IShortUrlRepository _shortUrlRepository;
         private readonly ISettingManager _settingManager;
-       
-        public ShortKeyManager(IShortUrlRepository shortUrlRepository, ISettingManager settingManager)
+        private readonly ICacheManager _cacheManager;
+        public ShortKeyManager(ICacheManager cacheManager,
+                               ISettingManager settingManager)
         {
-            _shortUrlRepository = shortUrlRepository;
             _settingManager = settingManager;
+            _cacheManager = cacheManager;
         }
 
         /// <summary>
@@ -59,18 +59,21 @@ namespace PonyUrl.Infrastructure
 
             } while (isExist || containsForbiddenWord);
 
+            //Create ShortKey In Cache Db
+            await _cacheManager.SetUrl(shortKey, string.Empty);
+
             return shortKey;
         }
 
         /// <summary>
-        /// Check key if exist in collection
+        /// Check key if exist in cache collection
         /// </summary>
         /// <param name="shortKey"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<bool> IsExistAsync(string shortKey, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await _shortUrlRepository.IsExistAsync(shortKey, cancellationToken);
+            return await _cacheManager.IsExist(shortKey);
         }
 
         /// <summary>

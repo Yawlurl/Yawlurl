@@ -36,7 +36,7 @@ namespace PonyUrl.Domain
 
         public Stat(Guid shortUrlId, string ipAddress, string referer, string userAgent) : this()
         {
-            Check.ArgumentNotNullOrEmpty(shortUrlId);
+            Check.ArgumentNotDefaultOrEmpty(shortUrlId);
             Check.ArgumentNotNullOrEmpty(ipAddress);
 
             ShortUrlId = shortUrlId;

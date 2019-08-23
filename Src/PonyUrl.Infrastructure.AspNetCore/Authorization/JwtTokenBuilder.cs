@@ -20,13 +20,14 @@ namespace PonyUrl.Infrastructure.AspNetCore.Authorization
         }
 
 
-        public async Task<object> GenerateJwtToken(string email, ApplicationUser user)
+        public async Task<JwtTokenModel> GenerateJwtToken(string email, ApplicationUser user)
         {
             var claims = new List<Claim>
             {
-                new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, email),
-                new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id)
+                new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
             };
 
 
@@ -42,7 +43,23 @@ namespace PonyUrl.Infrastructure.AspNetCore.Authorization
                 signingCredentials: creds
             );
 
-            return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
+            var refreshToken = new JwtSecurityToken(
+                _configuration["JwtIssuer"],
+                _configuration["JwtIssuer"],
+                claims,
+                expires: expires.AddDays(AuthContstants.RefreshTokenDaysCount),
+                signingCredentials: creds
+            );
+
+            var jwtToken = new JwtTokenModel
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                ExpireDateTime = expires,
+                RefreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken),
+                Type = AuthContstants.AuthenticationSchemes.Bearer
+            };
+
+            return await Task.FromResult(jwtToken);
         }
     }
 }

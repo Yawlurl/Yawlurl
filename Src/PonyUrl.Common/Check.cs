@@ -9,18 +9,18 @@ namespace PonyUrl.Common
     {
         public static void ArgumentNotNull(object obj, string paramName = "")
         {
-            That<ArgumentNullException>(obj != null, paramName); 
+            That<ArgumentNullException>(obj == null, paramName); 
         }
 
-        public static void ArgumentNotNullOrEmpty(object obj)
+        public static void ArgumentNotNullOrEmpty(string text)
         {
-            if (IsNullOrEmpty(obj))
-                throw new ArgumentNullException(nameof(obj));
+            if (IsNullOrEmpty(text))
+                throw new ArgumentNullException(nameof(text));
         }
 
         public static void NotNull(object obj, string paramName = "")
         {
-            That<NullReferenceException>(obj != null, paramName);
+            That<NullReferenceException>(obj == null, paramName);
         }
 
         public static void ArgumentNotUrl(string url)
@@ -31,17 +31,29 @@ namespace PonyUrl.Common
             }
         }
 
+        public static void ArgumentNotDefaultOrEmpty(Guid guid)
+        {
+            if(IsGuidDefaultOrEmpty(guid))
+            {
+                throw new ArgumentException(nameof(guid));
+            }
+        }
+
+
+        public static bool IsGuidDefaultOrEmpty(Guid guid)
+        {
+            return guid == Guid.Empty || guid == default(Guid);
+        }
 
         public static bool IsNull(object obj)
         {
             return obj == null;
         }
 
-        public static bool IsNullOrEmpty(object obj)
+        public static bool IsNullOrEmpty(string text)
         {
-            return obj is string ? string.IsNullOrWhiteSpace(Convert.ToString(obj)) 
-                                 : obj is Guid ? Guid.Empty == (Guid)obj 
-                                               : obj == null;
+            return string.IsNullOrEmpty(text);
+                                 
         }
 
         public static bool IsNotNull(object obj)
@@ -49,9 +61,9 @@ namespace PonyUrl.Common
             return !IsNull(obj);
         }
 
-        public static bool IsNotNullOrEmpty(object obj)
+        public static bool IsNotNullOrEmpty(string text)
         {
-            return !IsNullOrEmpty(obj);
+            return !IsNullOrEmpty(text);
         }
 
         public static bool IsValidUrl(string url)
@@ -61,7 +73,7 @@ namespace PonyUrl.Common
 
         public static void That<TException>(bool condition, string message = "") where TException : Exception
         {
-            if (!condition)
+            if (condition)
             {
                 throw (TException)Activator.CreateInstance(typeof(TException), message);
             } 

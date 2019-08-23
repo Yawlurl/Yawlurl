@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using PonyUrl.Domain;
 using PonyUrl.Infrastructure.AspNetCore.Exceptions;
 using System;
 
 namespace PonyUrl.Infrastructure.AspNetCore
 {
     /// <summary>
-    /// 
+    /// Handle all exceptions and return friendly model
     /// </summary>
     public class ApiExcepitonFilterAttribute : ExceptionFilterAttribute
     {
@@ -23,19 +24,17 @@ namespace PonyUrl.Infrastructure.AspNetCore
             {
                 var ex = context.Exception as ApiException;
 
-                context.Exception = null;
-
                 apiErrorModel = new ApiErrorModel(ex.Message)
                 {
-                    Errors = ex.Errors
+                    Errors = ex.Errors,
                 };
-
                 context.HttpContext.Response.StatusCode = ex.StatusCode;
 
             }
             else if (context.Exception is UnauthorizedAccessException)
             {
                 apiErrorModel = new ApiErrorModel("Unauthorized Access");
+               
                 context.HttpContext.Response.StatusCode = 401;
             }
             else
@@ -49,13 +48,15 @@ namespace PonyUrl.Infrastructure.AspNetCore
 
                 apiErrorModel = new ApiErrorModel(msg)
                 {
-                    Detail = stack
+                    Detail = stack,
                 };
 
                 context.HttpContext.Response.StatusCode = 500;
 #endif
             }
 
+            //Set Exception Type
+            apiErrorModel.Type = context?.Exception?.GetType().Name;
 
             context.Result = new JsonResult(apiErrorModel);
 
