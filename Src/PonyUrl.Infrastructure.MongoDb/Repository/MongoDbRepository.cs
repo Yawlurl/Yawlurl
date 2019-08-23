@@ -65,7 +65,7 @@ namespace PonyUrl.Infrastructure.MongoDb
 
             await Collection.InsertOneAsync(entity, null, cancellationToken);
 
-            return await GetAsync(entity.Id);
+            return entity;
         }
 
 
@@ -76,12 +76,12 @@ namespace PonyUrl.Infrastructure.MongoDb
             return await Collection.FindOneAndReplaceAsync(e => e.Id.Equals(entity.Id), entity, null, cancellationToken);
         }
 
-        public virtual async Task<List<TEntity>> GetAllPaginationAsync(int pageIndex, int count, CancellationToken cancellationToken = default)
+        public virtual async Task<List<TEntity>> GetAllPaginationAsync(int pageIndex, int count, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await Task.FromResult(Collection.AsQueryable().Skip(pageIndex).Take(count).ToList());
         }
 
-        public async Task<List<TEntity>> BulkInsertAsync(List<TEntity> entities, CancellationToken cancellationToken = default)
+        public async Task<List<TEntity>> BulkInsertAsync(List<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken))
         {
             Check.ArgumentNotNull(entities);
 
