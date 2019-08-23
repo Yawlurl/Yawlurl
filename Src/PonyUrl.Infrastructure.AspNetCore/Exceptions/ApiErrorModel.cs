@@ -9,6 +9,9 @@ namespace PonyUrl.Infrastructure.AspNetCore.Exceptions
 {
     public class ApiErrorModel
     {
+        [JsonProperty("type")]
+        public string Type { get; set; }
+
         [JsonProperty("message")]
         public string Message { get; set; }
 
@@ -19,7 +22,7 @@ namespace PonyUrl.Infrastructure.AspNetCore.Exceptions
         public string Detail { get; set; }
 
         [JsonProperty("errors")]
-        public List<string> Errors { get; set; }
+        public List<ErrorModel> Errors { get; set; }
 
         public ApiErrorModel(string message)
         {

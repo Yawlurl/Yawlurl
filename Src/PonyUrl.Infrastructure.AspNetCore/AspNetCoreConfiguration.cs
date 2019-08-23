@@ -41,6 +41,8 @@ namespace PonyUrl.Infrastructure.AspNetCore
                 };
             });
 
+            services.AddMvcCore().AddAuthorization();
+
             // MongoDb Identity
             services.AddIdentityMongoDbProvider<ApplicationUser>(options =>
             {

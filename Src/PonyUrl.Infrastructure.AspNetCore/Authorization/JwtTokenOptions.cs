@@ -16,7 +16,7 @@ namespace PonyUrl.Infrastructure.AspNetCore.Authorization
 
         public DateTime IssueAt { get; set; } = DateTime.UtcNow;
 
-        public TimeSpan ValidFor { get; set; } = TimeSpan.FromHours(5);
+        public TimeSpan ValidFor { get; set; } = TimeSpan.FromHours(AuthContstants.TokenHoursCount);
 
         public DateTime Expiration => IssueAt.Add(ValidFor);
 
