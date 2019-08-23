@@ -1,4 +1,5 @@
-﻿using PonyUrl.Domain;
+﻿using PonyUrl.Common;
+using PonyUrl.Domain;
 using System;
 using System.Linq.Expressions;
 
@@ -12,18 +13,16 @@ namespace PonyUrl.Application.ShortUrls.Queries
         public long Hits { get; set; }
 
 
-        public static Expression<Func<ShortUrl, ShortUrlViewModel>> Map
+        public void MapFromEntity(ShortUrl entity)
         {
-            get
-            {
-                return p => new ShortUrlViewModel
-                {
-                    Id = p.Id,
-                    ShortKey = p.ShortKey,
-                    LongUrl = p.LongUrl, 
-                    Hits = p.Hits
-                };
-            }
+            Check.ArgumentNotNull(entity);
+
+            Id = entity.Id;
+            ShortKey = entity.ShortKey;
+            LongUrl = entity.LongUrl;
+            Hits = entity.Hits;
         }
+        
+        
     }
 }
