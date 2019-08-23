@@ -6,6 +6,7 @@ using System;
 using FluentAssertions;
 using System.Threading;
 using PonyUrl.Core;
+using MediatR;
 
 namespace PonyUrl.Application.Test.ShortUrls.Commands
 {
@@ -19,10 +20,12 @@ namespace PonyUrl.Application.Test.ShortUrls.Commands
         {
             _createCommandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(),
                                                                      That<IShortKeyManager>(),
-                                                                     That<ICacheManager>());
+                                                                     That<ICacheManager>(),
+                                                                     That<IMediator>());
 
             _deleteCommandHandler = new DeleteShortUrlCommandHandler(That<IShortUrlRepository>(), 
-                                                                     That<ICacheManager>());
+                                                                     That<ICacheManager>(),
+                                                                     That<IMediator>());
         }
 
 

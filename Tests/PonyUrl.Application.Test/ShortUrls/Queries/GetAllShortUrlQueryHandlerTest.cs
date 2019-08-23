@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Xunit;
 using PonyUrl.Application.ShortUrls.Commands;
 using PonyUrl.Core;
+using MediatR;
 
 namespace PonyUrl.Application.Test.ShortUrls.Queries
 {
@@ -21,7 +22,8 @@ namespace PonyUrl.Application.Test.ShortUrls.Queries
         {
             _commandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(), 
                                                                That<IShortKeyManager>(),
-                                                               That<ICacheManager>());
+                                                               That<ICacheManager>(),
+                                                               That<IMediator>());
 
             _queryhandler = new GetAllShortUrlQueryHandler(That<IShortUrlRepository>(), That<ICacheManager>());
         }
