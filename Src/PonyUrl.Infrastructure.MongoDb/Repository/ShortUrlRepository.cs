@@ -37,10 +37,12 @@ namespace PonyUrl.Infrastructure.MongoDb.Repository
         {
             if (await IsExistAsync(entity.ShortKey))
             {
-                throw new DomainException("This shortkey already is exist.");
+                return await base.UpdateAsync(entity, cancellationToken);
             }
-
-            return await base.InsertAsync(entity, cancellationToken);
+            else
+            {
+                return await base.InsertAsync(entity, cancellationToken);
+            }
         }
     }
 }
