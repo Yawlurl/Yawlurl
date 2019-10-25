@@ -23,7 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Src\PonyUrl.Domain\PonyUrl.Domain.csproj" />
     <ProjectReference Include="..\..\Src\PonyUrl.Infrastructure.MongoDb\PonyUrl.Infrastructure.MongoDb.csproj" />
-    <ProjectReference Include="..\..\Src\PonyUrl.Infrastructure.Redis\PonyUrl.Infrastructure.Redis.csproj" />
   </ItemGroup>
 
   <ItemGroup>
