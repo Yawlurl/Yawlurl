@@ -8,6 +8,9 @@ using FluentAssertions;
 using System;
 using PonyUrl.Core;
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using PonyUrl.Infrastructure.AspNetCore.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace PonyUrl.Application.Test.ShortUrls.Commands
 {
@@ -17,7 +20,12 @@ namespace PonyUrl.Application.Test.ShortUrls.Commands
 
         public CreateShortUrlCommandHandlerTest()
         {
-            _commandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(), That<IShortKeyManager>(), That<ICacheManager>(), That<IMediator>());
+            _commandHandler = new CreateShortUrlCommandHandler(SlugManagerMock,
+                                                               HttpContextAccessorMock,
+                                                               MediatorMock,
+                                                               GlobalSettingsMock,
+                                                               ShortUrlRepositoryMock,
+                                                               UserManagerMock);
         }
 
         [Fact]
