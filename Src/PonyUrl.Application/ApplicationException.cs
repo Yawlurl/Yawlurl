@@ -1,4 +1,5 @@
 ﻿using FluentValidation.Results;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,11 @@ namespace PonyUrl.Application
     public class ApplicationException : Exception
     {
         public ApplicationException(string message) : base(message)
+        {
+
+        }
+
+        public ApplicationException(string message, Exception innerException) : base(message, innerException)
         {
 
         }
