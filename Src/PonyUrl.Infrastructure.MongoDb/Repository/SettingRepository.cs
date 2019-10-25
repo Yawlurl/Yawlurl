@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PonyUrl.Infrastructure.MongoDb.Repository
+namespace PonyUrl.Infrastructure.MongoDb
 {
     public class SettingRepository : MongoDbRepository<Setting>, ISettingRepository
     {

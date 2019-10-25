@@ -19,7 +19,6 @@ namespace PonyUrl.Infrastructure.AspNetCore.Authorization
             _configuration = configuration;
         }
 
-
         public async Task<JwtTokenModel> GenerateJwtToken(string email, ApplicationUser user)
         {
             var claims = new List<Claim>
@@ -27,6 +26,9 @@ namespace PonyUrl.Infrastructure.AspNetCore.Authorization
                 new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Email, email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, string.Join(';', user.Roles)),
+                new Claim(ClaimTypes.AuthenticationMethod, AuthConstants.AuthenticationSchemes.Bearer),
+                new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
             };
 
@@ -43,20 +45,11 @@ namespace PonyUrl.Infrastructure.AspNetCore.Authorization
                 signingCredentials: creds
             );
 
-            var refreshToken = new JwtSecurityToken(
-                _configuration["JwtIssuer"],
-                _configuration["JwtIssuer"],
-                claims,
-                expires: expires.AddDays(AuthContstants.RefreshTokenDaysCount),
-                signingCredentials: creds
-            );
-
             var jwtToken = new JwtTokenModel
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
                 ExpireDateTime = expires,
-                RefreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken),
-                Type = AuthContstants.AuthenticationSchemes.Bearer
+                Type = AuthConstants.AuthenticationSchemes.Bearer
             };
 
             return await Task.FromResult(jwtToken);

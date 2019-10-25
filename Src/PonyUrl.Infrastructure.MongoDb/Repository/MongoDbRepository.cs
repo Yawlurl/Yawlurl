@@ -18,6 +18,8 @@ namespace PonyUrl.Infrastructure.MongoDb
 
         public IDbContext DbContext => _mongoDbContext;
 
+        public IMongoClient Client { get; private set; }
+
         public MongoDbRepository(IMongoDbContext mongoDbContext)
         {
             Check.ArgumentNotNull(mongoDbContext);
@@ -25,21 +27,23 @@ namespace PonyUrl.Infrastructure.MongoDb
             _mongoDbContext = mongoDbContext;
 
             Collection = _mongoDbContext.Collection<TEntity>();
+
+            Client = mongoDbContext.Client;
         }
 
-        public virtual async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<bool> Delete(Guid id, CancellationToken cancellationToken = default(CancellationToken))
         {
             Check.ArgumentNotNull(id);
             DeleteResult deleteResult = await Collection.DeleteOneAsync(r => r.Id.Equals(id), cancellationToken);
             return deleteResult.DeletedCount > 0;
         }
 
-        public virtual async Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<List<TEntity>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
             return await Collection.AsQueryable().ToListAsync(cancellationToken);
         }
 
-        public virtual async Task<TEntity> GetAsync(Guid id, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<TEntity> Get(Guid id, CancellationToken cancellationToken = default(CancellationToken))
         {
             Check.ArgumentNotNull(id);
 
@@ -47,19 +51,19 @@ namespace PonyUrl.Infrastructure.MongoDb
         }
 
 
-        public virtual async Task<long> GetCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<long> Count(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await this.Collection.EstimatedDocumentCountAsync(null, cancellationToken);
+            return await Collection.EstimatedDocumentCountAsync(null, cancellationToken);
         }
 
 
-        public virtual async Task<List<TEntity>> GetManyAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<List<TEntity>> GetMany(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return (await this.Collection.FindAsync(filter)).ToList();
+            return (await Collection.FindAsync(filter)).ToList();
         }
 
 
-        public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<TEntity> Insert(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             Check.ArgumentNotNull(entity);
 
@@ -69,25 +73,32 @@ namespace PonyUrl.Infrastructure.MongoDb
         }
 
 
-        public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<TEntity> Update(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             Check.ArgumentNotNull(entity);
 
             return await Collection.FindOneAndReplaceAsync(e => e.Id.Equals(entity.Id), entity, null, cancellationToken);
         }
 
-        public virtual async Task<List<TEntity>> GetAllPaginationAsync(int pageIndex, int count, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<List<TEntity>> GetAllPagination(int pageIndex, int count, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Task.FromResult(Collection.AsQueryable().Skip(pageIndex).Take(count).ToList());
+            return await Task.FromResult(Collection.AsQueryable().Skip(pageIndex * count).Take(count).ToList());
         }
 
-        public async Task<List<TEntity>> BulkInsertAsync(List<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<List<TEntity>> BulkInsert(List<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken))
         {
             Check.ArgumentNotNull(entities);
 
             await Collection.InsertManyAsync(entities, null, cancellationToken);
 
             return entities;
+        }
+
+        public virtual async Task<bool> IsExist(TEntity entity, CancellationToken cancellationToken = default)
+        {
+            Check.ArgumentNotNull(entity);
+
+            return (await Collection.FindAsync(s => s.Id.Equals(entity.Id))).Any();
         }
     }
 }

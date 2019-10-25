@@ -1,9 +1,5 @@
-﻿using FluentValidation;
-using Newtonsoft.Json;
-using PonyUrl.Common;
-using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PonyUrl.Infrastructure.AspNetCore.Exceptions
 {
@@ -31,6 +27,11 @@ namespace PonyUrl.Infrastructure.AspNetCore.Exceptions
         }
 
         //TODO:Validation
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 
 
