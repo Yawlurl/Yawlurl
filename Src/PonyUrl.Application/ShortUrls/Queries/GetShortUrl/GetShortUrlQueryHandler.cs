@@ -3,77 +3,100 @@ using System.Threading;
 using System.Threading.Tasks;
 using PonyUrl.Domain;
 using PonyUrl.Common;
-using PonyUrl.Core;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using PonyUrl.Infrastructure.AspNetCore.Models;
+using System;
+using PonyUrl.Domain.Core;
 
 namespace PonyUrl.Application.ShortUrls.Queries
 {
-    public class GetShortUrlQueryHandler : IRequestHandler<GetShortUrlQuery, ShortUrlViewModel>
+    public class GetShortUrlQueryHandler : BaseHandler<GetShortUrlQuery, ShortUrlDto>
     {
+        #region Fields
         private readonly IShortUrlRepository _shortUrlRepository;
-        private readonly ICacheManager _cacheManager;
+        private readonly ISlugManager _slugManager;
         private readonly IMediator _mediator;
+        private readonly IGlobalSettings _globalSetting;
+        #endregion
 
-        public GetShortUrlQueryHandler(IShortUrlRepository shortUrlRepository, ICacheManager cacheManager, IMediator mediator)
+        #region C'tor
+        public GetShortUrlQueryHandler(IShortUrlRepository shortUrlRepository,
+                                       ISlugManager slugManager,
+                                       IMediator mediator,
+                                       IGlobalSettings globalSettings,
+                                       UserManager<ApplicationUser> userManager,
+                                       IHttpContextAccessor httpContextAccessor)
+            : base(httpContextAccessor, userManager)
         {
             _shortUrlRepository = shortUrlRepository;
-            _cacheManager = cacheManager;
+            _slugManager = slugManager;
             _mediator = mediator;
-        }
+            _globalSetting = globalSettings;
 
-        public async Task<ShortUrlViewModel> Handle(GetShortUrlQuery request, CancellationToken cancellationToken)
+        }
+        #endregion
+
+
+        public override async Task<ShortUrlDto> Handle(GetShortUrlQuery request, CancellationToken cancellationToken)
         {
-            var result = new ShortUrlViewModel();
+            var data = new ShortUrlDto();
 
-            //Check from cache
-            var shortUrl = await _cacheManager.GetUrl(request.ShortKey);
+            // Get SlugId
+            var slugId = await CheckAndGetSlugId(request.SlugKey, cancellationToken);
 
-            if (Check.IsNullOrEmpty(shortUrl))
-            {
-                //Check from db
-                var entity = await _shortUrlRepository.GetByShortKeyAsync(request.ShortKey);
+            // Get ShortUrl
+            var shortUrlEntity = await CheckAndGetShortUrl(slugId, request.Boost, cancellationToken);
 
-                Check.That<ApplicationException>(Check.IsNull(entity), "ShortUrl cannot find!");
+            // Map
+            data.MapFromEntity(shortUrlEntity, _globalSetting.RouterDomain);
 
-                //Set Hits
-                entity.Boost();
-                await _shortUrlRepository.UpdateAsync(entity, cancellationToken);
+            // @Event
+            await _mediator.Publish(new ShortUrlQueried() { ShortUrl = shortUrlEntity }, cancellationToken);
 
-                //Set cache
-                await _cacheManager.SetUrl(entity.ShortKey, entity.LongUrl);
-
-                //Map
-                result.MapFromEntity(entity);
-            }
-            else
-            {
-                //Check from db
-                var isExist = await _shortUrlRepository.IsExistAsync(request.ShortKey, cancellationToken);
-
-                if (!isExist)
-                {
-                    //Delete from cache
-                    await _cacheManager.DeleteUrl(request.ShortKey);
-
-                    throw new ApplicationException($"This shortKey:'{request.ShortKey}' not found");
-                }
-                else
-                {
-                    //Get Entity
-                    var entity = await _shortUrlRepository.GetByShortKeyAsync(request.ShortKey, cancellationToken);
-                    
-                    //Set Hits
-                    entity.Boost();
-                    
-                    //Update Entity
-                    await _shortUrlRepository.UpdateAsync(entity, cancellationToken);
-
-                    //Map
-                    result.MapFromEntity(entity);
-                }
-            }
-
-            return result;
-
+            return data;
         }
+
+        #region Methods
+
+        private async Task<Guid> CheckAndGetSlugId(string keyword, CancellationToken cancellationToken)
+        {
+            var slugId = await _slugManager.GetSlugIdByKeyword(keyword, cancellationToken);
+
+            Check.That<ApplicationException>(Check.IsGuidDefaultOrEmpty(slugId), $"This slug:'{keyword}' not found.");
+
+            var isExist = await _shortUrlRepository.IsExistBySlug(slugId, cancellationToken);
+
+            //Check existence
+            Check.That<ApplicationException>(!isExist, $"This slug:'{keyword}' not found");
+
+            return slugId;
+        }
+
+        private async Task<ShortUrl> CheckAndGetShortUrl(Guid slugId, bool boost, CancellationToken cancellationToken)
+        {
+            //Get shorturl entity
+            var shortUrlEntity = await _shortUrlRepository.GetBySlug(slugId, cancellationToken);
+
+            //Check owner
+            Check.That<ApplicationException>(!CurrentUser.IsAdmin() &&
+                !shortUrlEntity.CreatedBy.Equals(CurrentUser.Id), $"This slug not found for the user");
+
+            //Set Hits
+            if (boost)
+            {
+                shortUrlEntity.Boost();
+            }
+
+            //Update the shorturl
+            await _shortUrlRepository.Update(shortUrlEntity, cancellationToken);
+
+            return shortUrlEntity;
+        }
+
+
+
+        #endregion
+
     }
 }

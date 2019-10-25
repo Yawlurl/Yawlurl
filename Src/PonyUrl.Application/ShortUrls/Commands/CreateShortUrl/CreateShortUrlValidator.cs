@@ -9,7 +9,5 @@ namespace PonyUrl.Application.ShortUrls.Commands
         {
             RuleFor(x => x.LongUrl).NotEmpty().Must(m => Check.IsValidUrl(m)).WithMessage("LongUrl must be a uri");
         }
-
-
     }
 }

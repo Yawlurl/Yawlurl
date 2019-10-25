@@ -1,10 +1,17 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace PonyUrl.Application.ShortUrls.Queries
 {
-    public class GetShortUrlQuery : IRequest<ShortUrlViewModel>
+    public class GetShortUrlQuery : IRequest<ShortUrlDto>
     {
-        public string ShortKey { get; set; }
+        [Required]
+        [JsonProperty(PropertyName = "slug_key")]
+        public string SlugKey { get; set; }
+
+        [JsonProperty(PropertyName = "boost")]
+        public bool Boost { get; set; }
     }
 }

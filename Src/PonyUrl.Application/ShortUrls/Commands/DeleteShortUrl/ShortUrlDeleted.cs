@@ -2,8 +2,6 @@
 using PonyUrl.Common;
 using PonyUrl.Domain;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,20 +13,33 @@ namespace PonyUrl.Application.ShortUrls.Commands
 
         public class DeletedShortUrlHandler : INotificationHandler<ShortUrlDeleted>
         {
-            public IShortUrlRepository _shortUrlRepository;
+            public ISlugRepository _slugRepository;
 
-            public DeletedShortUrlHandler(IShortUrlRepository shortUrlRepository)
+            public DeletedShortUrlHandler(ISlugRepository slugRepository)
             {
-                _shortUrlRepository = shortUrlRepository;
+                _slugRepository = slugRepository;
             }
 
 
             public async Task Handle(ShortUrlDeleted notification, CancellationToken cancellationToken)
             {
-                //Delete from database
-                if (!Check.IsGuidDefaultOrEmpty(notification.ShortUrl.Id))
+                //TODO:Log
+
+                //Deactivate Slug
+                await DeactiveSlug(notification.ShortUrl.SlugId);
+
+            }
+
+
+            private async Task DeactiveSlug(Guid slugId)
+            {
+                var slug = await _slugRepository.Get(slugId);
+
+                if (Check.IsNotNull(slug))
                 {
-                    await _shortUrlRepository.DeleteAsync(notification.ShortUrl.Id, cancellationToken);
+                    slug.DeActivate();
+
+                    await _slugRepository.Update(slug);
                 }
             }
         }

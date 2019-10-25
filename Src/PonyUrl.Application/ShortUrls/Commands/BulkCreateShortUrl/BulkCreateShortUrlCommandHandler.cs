@@ -1,67 +1,78 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using PonyUrl.Common;
 using PonyUrl.Core;
 using PonyUrl.Domain;
+using PonyUrl.Infrastructure.AspNetCore.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
+using PonyUrl.Domain.Core;
 
 namespace PonyUrl.Application.ShortUrls.Commands.BulkCreateShortUrl
 {
-    public class BulkCreateShortUrlCommandHandler : IRequestHandler<BulkCreateShortUrlCommand, List<ShortUrlDto>>
+    public class BulkCreateShortUrlCommandHandler : BaseHandler<BulkCreateShortUrlCommand, List<ShortUrlDto>>
     {
+        #region Fields
         private readonly IShortUrlRepository _shortUrlRepository;
-        private readonly IShortKeyManager _shortKeyManager;
-        private readonly BulkCreateShortUrlValidator validator;
-        private readonly ICacheManager _cacheManager;
+        private readonly ISlugManager _slugManager;
+        private readonly BulkCreateShortUrlValidator _validator;
         private readonly IMediator _mediator;
+        private readonly IGlobalSettings _globalSettings;
+        #endregion
 
+        #region C'tor
         public BulkCreateShortUrlCommandHandler(IShortUrlRepository shortUrlRepository,
-                                                IShortKeyManager shortKeyManager,
-                                                ICacheManager cacheManager,
-                                                IMediator mediator)
+                                                ISlugManager slugManager,
+                                                IMediator mediator,
+                                                IGlobalSettings globalSettings,
+                                                IHttpContextAccessor httpContextAccessor,
+                                                UserManager<ApplicationUser> userManager)
+            : base(httpContextAccessor, userManager)
         {
             _shortUrlRepository = shortUrlRepository;
-            _shortKeyManager = shortKeyManager;
-            _cacheManager = cacheManager;
+            _slugManager = slugManager;
             _mediator = mediator;
-            validator = new BulkCreateShortUrlValidator();
+            _globalSettings = globalSettings;
         }
+        #endregion
 
+        #region Properties
+        public override IValidator Validator { get { return _validator ?? new BulkCreateShortUrlValidator(); } }
+        #endregion
 
-        public async Task<List<ShortUrlDto>> Handle(BulkCreateShortUrlCommand request, CancellationToken cancellationToken)
+        public override async Task<List<ShortUrlDto>> Handle(BulkCreateShortUrlCommand request, CancellationToken cancellationToken)
         {
-            var validationResult = validator.Validate(request);
-
-            if (!validationResult.IsValid)
-            {
-                throw new ApplicationException(validationResult.Errors);
-            }
-
-            var result = new List<ShortUrlDto>();
-
+            ValidateRequest(request);
+            List<Slug> slugs = new List<Slug>();
             List<ShortUrl> shortUrls = new List<ShortUrl>();
-
+            Slug slug;
             foreach (var url in request.LongUrls)
             {
                 //Generate shortUrl
                 var shortUrl = new ShortUrl(url)
                 {
-                    ShortKey = await _shortKeyManager.GenerateShortKeyRandomAsync(cancellationToken)
+                    CreatedBy = CurrentUser.UserId,
+                    UpdatedBy = CurrentUser.UserId
                 };
+                slug = await _slugManager.Create(CurrentUser, string.Empty, true, cancellationToken);
+                slugs.Add(slug);
+
+                shortUrl.SetSlug(slug);
 
                 shortUrls.Add(shortUrl);
             }
 
-            //Add to cache
-            foreach (var shortUrl in shortUrls)
-            {
-                await _cacheManager.SetUrl(shortUrl.ShortKey, shortUrl.LongUrl);
+            //Add or Update to database
+            await _shortUrlRepository.BulkInsert(shortUrls, cancellationToken);
 
-                result.Add(new ShortUrlDto() { ShortKey = shortUrl.ShortKey, LongUrl = shortUrl.LongUrl });
-            }
+            // Data
+            var result = shortUrls.AsQueryable().Select(s => new ShortUrlDto().MapFromEntity(s, _globalSettings.RouterDomain)).ToList();
 
             //Publish Event
             await _mediator.Publish(new ShortUrlsCreated { ShortUrls = shortUrls });
