@@ -12,27 +12,29 @@ namespace PonyUrl.Core
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    public interface IRepository<TEntity, TKey> 
+    public interface IRepository<TEntity, TKey>
     {
         IDbContext DbContext { get; }
 
-        Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<TEntity> Get(TKey id, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
+        Task<TEntity> Insert(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<List<TEntity>> BulkInsertAsync(List<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<TEntity>> BulkInsert(List<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
+        Task<TEntity> Update(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<bool> DeleteAsync(TKey id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<bool> Delete(TKey id, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<TEntity>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<List<TEntity>> GetManyAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<TEntity>> GetMany(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<long> GetCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<long> Count(CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<List<TEntity>> GetAllPaginationAsync(int pageIndex, int count, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<TEntity>> GetAllPagination(int pageIndex, int count, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<bool> IsExist(TEntity entity, CancellationToken cancellationToken = default(CancellationToken));
     }
 
     /// <summary>
