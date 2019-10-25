@@ -3,8 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using PonyUrl.Core;
 using PonyUrl.Domain;
 using PonyUrl.Infrastructure.MongoDb;
-using PonyUrl.Infrastructure.MongoDb.Repository;
-using PonyUrl.Infrastructure.Redis;
 
 namespace PonyUrl.Infrastructure
 {
@@ -21,17 +19,15 @@ namespace PonyUrl.Infrastructure
             //MongoDb Congiguration
             services.ConfigureMongoDb(configuration);
 
-            //Redis Configuration
-            services.ConfigureRedisDb(configuration);
-
             //Managers
-            services.AddScoped<IShortKeyManager, ShortKeyManager>();
+            services.AddScoped<ISlugManager, SlugManager>();
             services.AddScoped<ISettingManager, SettingManager>();
 
             //Repository
             services.AddTransient<IShortUrlRepository, ShortUrlRepository>();
             services.AddTransient<ISettingRepository, SettingRepository>();
             services.AddTransient<IStatRepository, StatRepository>();
+            services.AddTransient<ISlugRepository, SlugRepository>();
         }
     }
 }

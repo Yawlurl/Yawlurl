@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using AspNetCore.Identity.Mongo;
-using MediatR;
+﻿using MediatR;
 using MediatR.Pipeline;
+using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Serialization;
 using PonyUrl.Application.ShortUrls.Commands;
 using PonyUrl.Application.ShortUrls.Queries;
 using PonyUrl.Infrastructure;
 using PonyUrl.Infrastructure.AspNetCore;
+using PonyUrl.Web.Api.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -53,7 +47,7 @@ namespace PonyUrl.Web.Api
         {
             // Swagger
             services.AddSwaggerGen(ConfigureSwaggerOptions);
-            
+
             // Add MediatR
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>));
             services.AddMediatR(typeof(GetShortUrlQueryHandler).GetTypeInfo().Assembly);
@@ -69,7 +63,11 @@ namespace PonyUrl.Web.Api
             services.ConfigureGlobal(Configuration);
 
             //Add Routing
-            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+            services.Configure<RouteOptions>(options =>
+            {
+                options.AppendTrailingSlash = true;
+                options.LowercaseUrls = true;
+            });
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -107,6 +105,8 @@ namespace PonyUrl.Web.Api
             });
             options.AddSecurityRequirement(security);
 
+            options.OperationFilter<SwaggerHeaderFilter>();
+
             // Set the comments path for the Swagger JSON and UI.
             //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -132,7 +132,9 @@ namespace PonyUrl.Web.Api
             //// ===== Use Authentication ======
             app.UseAuthentication();
 
-            
+            //ExceptionHandler
+            app.ConfigureExceptionHandler();
+
             //app.UseHttpsRedirection();
 
             app.UseMvc(routes =>
@@ -144,9 +146,9 @@ namespace PonyUrl.Web.Api
 
 
             app.UseSwagger();
-            app.UseSwaggerUI(s =>
+            app.UseSwaggerUI(config =>
             {
-                s.SwaggerEndpoint("/swagger/v1/swagger.json", "PonyUrl API");
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "PonyUrl API");
                 //s.RoutePrefix = string.Empty;
             });
         }

@@ -1,5 +1,4 @@
 ﻿using PonyUrl.Core;
-using PonyUrl.Domain.Entities;
 
 namespace PonyUrl.Domain
 {

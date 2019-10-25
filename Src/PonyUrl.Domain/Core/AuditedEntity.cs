@@ -1,6 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using PonyUrl.Core;
-using PonyUrl.Domain.Entities;
 using System;
 
 namespace PonyUrl.Domain
@@ -9,21 +8,17 @@ namespace PonyUrl.Domain
     {
         public AuditedEntity()
         {
-
+            CreatedDate = DateTime.UtcNow;
         }
 
-        [BsonElement("created_date")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime CreatedDate { get; set; }
 
-        [BsonElement("creator")]
-        public virtual IUser CreatedBy { get; set; }
+        public virtual string CreatedBy { get; set; }
 
-        [BsonElement("updated_date")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime UpdatedDate { get; set; }
 
-        [BsonElement("modifier")]
-        public virtual IUser UpdatedBy { get; set; }
+        public virtual string UpdatedBy { get; set; }
     }
 }

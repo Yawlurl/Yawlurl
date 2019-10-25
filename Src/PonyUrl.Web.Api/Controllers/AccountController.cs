@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,6 +10,7 @@ using PonyUrl.Infrastructure.AspNetCore.Authorization;
 using PonyUrl.Infrastructure.AspNetCore.Exceptions;
 using PonyUrl.Infrastructure.AspNetCore.Models;
 using PonyUrl.Infrastructure.AspNetCore.Models.AccountViewModels;
+using PonyUrl.Web.Api.Core;
 
 namespace PonyUrl.Web.Api.Controllers
 {
@@ -66,7 +68,7 @@ namespace PonyUrl.Web.Api.Controllers
 
             var token = await _jwtTokenBuilder.GenerateJwtToken(model.Email, appUser);
 
-            return Ok(token);
+            return ResultAt(token);
 
         }
 
@@ -82,8 +84,10 @@ namespace PonyUrl.Web.Api.Controllers
             var user = new ApplicationUser
             {
                 UserName = model.Email,
-                Email = model.Email
+                Email = model.Email,
+                Roles = { AuthConstants.Roles.User },
             };
+
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -92,11 +96,7 @@ namespace PonyUrl.Web.Api.Controllers
                 throw new ApiException("Register Error", 400, result?.Errors?.Select(e => new ErrorModel { Code = e.Code, Description = e.Description }).ToList());
             }
 
-            await _signInManager.SignInAsync(user, false);
-
-            var token = await _jwtTokenBuilder.GenerateJwtToken(model.Email, user);
-
-            return Ok(token);
+            return ResultAt(new { result = true, message = "The user created successfuly!" }, StatusCodes.Status201Created);
         }
     }
 }

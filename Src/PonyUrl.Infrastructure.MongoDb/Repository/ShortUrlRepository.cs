@@ -1,48 +1,69 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using PonyUrl.Common;
 using PonyUrl.Domain;
+using System.Linq;
+using System;
 
-namespace PonyUrl.Infrastructure.MongoDb.Repository
+namespace PonyUrl.Infrastructure.MongoDb
 {
     public class ShortUrlRepository : MongoDbRepository<ShortUrl>, IShortUrlRepository
     {
         public ShortUrlRepository(IMongoDbContext mongoDbContext) : base(mongoDbContext)
         {
+            
         }
 
-        public async Task<ShortUrl> GetByShortKeyAsync(string shortKey, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ShortUrl> GetBySlug(Guid slugId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.ArgumentNotNullOrEmpty(shortKey);
-
-            return (await Collection.FindAsync(s => s.ShortKey.Equals(shortKey), null, cancellationToken)).FirstOrDefault();
+            return (await Collection.FindAsync(s => s.SlugId.Equals(slugId), null, cancellationToken)).FirstOrDefault();
         }
 
-        public async Task<string> GetLongUrlOnlyAsync(string shortKey, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> GetTargetUrlOnly(Guid slugId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var condition = Builders<ShortUrl>.Filter.Eq(s => s.ShortKey, shortKey);
-
-            var fields = Builders<ShortUrl>.Projection.Include(s => s.LongUrl);
-
-            return (await Collection.Find(condition).Project<ShortUrl>(fields).SingleOrDefaultAsync(cancellationToken)).LongUrl;
+            return (await Collection.Find(s=> s.SlugId.Equals(slugId)).
+                Project<ShortUrl>(Builders<ShortUrl>.Projection.Include(s => s.LongUrl)).SingleOrDefaultAsync(cancellationToken)).LongUrl;
         }
 
-        public async Task<bool> IsExistAsync(string shortKey, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<bool> IsExistBySlug(Guid slugId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return (await Collection.Find(s => s.ShortKey.Equals(shortKey)).FirstOrDefaultAsync(cancellationToken)) != null;
+            return (await Collection.Find(s => s.SlugId.Equals(slugId)).FirstOrDefaultAsync(cancellationToken)) != null;
         }
-
-        public async override Task<ShortUrl> InsertAsync(ShortUrl entity, CancellationToken cancellationToken = default(CancellationToken))
+        /// <summary>
+        /// Insert or Update
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ShortUrl> InsertOrUpdate(ShortUrl entity, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (await IsExistAsync(entity.ShortKey))
+            if (await IsExistBySlug(entity.SlugId))
             {
-                return await base.UpdateAsync(entity, cancellationToken);
+                return await base.Update(entity, cancellationToken);
             }
             else
             {
-                return await base.InsertAsync(entity, cancellationToken);
+                return await base.Insert(entity, cancellationToken);
             }
         }
+
+        public async Task<List<ShortUrl>> GetAllShortUrlsByUser(string userId = "", CancellationToken cancelationToken = default)
+        {
+            return Check.IsNullOrEmpty(userId) ? await GetAll() : await GetMany(s => s.CreatedBy.Equals(userId));
+        }
+
+        public async Task<List<ShortUrl>> GetAllPaginationShortUrlsByUser(int pageIndex, int count, string userId = "", CancellationToken cancelationToken = default)
+        {
+            return Check.IsNullOrEmpty(userId) ? await GetAllPagination(pageIndex, count, cancelationToken) :
+                await Task.FromResult(Collection.AsQueryable().Where(s => s.CreatedBy.Equals(userId)).Skip(pageIndex * count).Take(count).ToList());
+        }
+
+        public async Task<long> GetCountByUser(string userId = "", CancellationToken cancelationToken = default)
+        {
+            return Check.IsNullOrEmpty(userId) ? await Count(cancelationToken) : await Collection.CountDocumentsAsync(s => s.CreatedBy.Equals(userId));
+        }
+
     }
 }

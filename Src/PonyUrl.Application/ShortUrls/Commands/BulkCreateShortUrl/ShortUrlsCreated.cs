@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using PonyUrl.Common;
 
-namespace PonyUrl.Application.ShortUrls.Commands
+namespace PonyUrl.Application
 {
     public class ShortUrlsCreated : INotification
     {
@@ -16,19 +16,30 @@ namespace PonyUrl.Application.ShortUrls.Commands
 
         public class ShortUrlsCreatedHandler : INotificationHandler<ShortUrlsCreated>
         {
-            private readonly IShortUrlRepository _shortUrlRepository;
+            private readonly ISlugRepository _slugRepository;
 
-            public ShortUrlsCreatedHandler(IShortUrlRepository shortUrlRepository)
+            public ShortUrlsCreatedHandler(ISlugRepository slugRepository)
             {
-                _shortUrlRepository = shortUrlRepository;
+                _slugRepository = slugRepository;
             }
 
             public async Task Handle(ShortUrlsCreated notification, CancellationToken cancellationToken)
             {
-                //Save to database
-                if (notification.ShortUrls.TrueForAll(s => Check.IsGuidDefaultOrEmpty(s.Id)))
+                if (notification.ShortUrls.Any(s => !Check.IsGuidDefaultOrEmpty(s.Id)))
                 {
-                    await _shortUrlRepository.BulkInsertAsync(notification.ShortUrls, cancellationToken);
+                    foreach (var shortUrl in notification.ShortUrls.Where(s => !Check.IsGuidDefaultOrEmpty(s.Id)))
+                    {
+                        var slug = await _slugRepository.Get(shortUrl.SlugId);
+
+                        //Activate ShortKey
+                        slug.Activate();
+
+                        slug.UpdatedBy = shortUrl.UpdatedBy;
+                        slug.UpdatedDate = shortUrl.UpdatedDate;
+
+                        //Update
+                        await _slugRepository.Update(slug, cancellationToken);
+                    }
                 }
             }
         }

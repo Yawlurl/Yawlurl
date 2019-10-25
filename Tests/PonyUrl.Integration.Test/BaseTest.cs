@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using PonyUrl.Infrastructure.MongoDb;
-using PonyUrl.Infrastructure.Redis;
 
 namespace PonyUrl.Integration.Test
 {
@@ -22,7 +21,6 @@ namespace PonyUrl.Integration.Test
             Services = new ServiceCollection();
 
             Services.ConfigureMongoDb(ConfigurationRoot);
-            Services.ConfigureRedisDb(ConfigurationRoot);
 
             ServiceProvider = Services.BuildServiceProvider();
         }

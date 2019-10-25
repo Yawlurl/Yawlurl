@@ -1,30 +1,24 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace PonyUrl.Infrastructure.MongoDb
 {
     public static class MongoDbConfiguration
     {
-        private const string SectionName = nameof(MongoDbAppSettings); //"MongoDbAppSettings";
+        private const string MONGODB_API_CONNECTION = "MongoDbApi";
 
         public static void ConfigureMongoDb(this IServiceCollection services, IConfiguration configuration)
         {
-            var settings = GetMongoDbAppSettings(configuration);
-
-
-            services.AddScoped<IMongoDbSettings>(d => new MongoDbSettings(settings.ConnectionString));
+            
+            services.AddScoped<IMongoDbSettings>(d => new MongoDbSettings(configuration.GetConnectionString(MONGODB_API_CONNECTION)));
             services.AddScoped<IMongoDbContext, MongoDbContext>();
 
             services.AddScoped(typeof(IMongoDbRepository<>), typeof(MongoDbRepository<>));
 
+        
         }
 
-        public static MongoDbAppSettings GetMongoDbAppSettings(IConfiguration configuration)
-        {
-            var mongoDbSettingsSection = configuration.GetSection(SectionName);
-
-            return mongoDbSettingsSection.Get<MongoDbAppSettings>();
-        }
-
+  
     }
 }

@@ -24,7 +24,7 @@ namespace PonyUrl.Infrastructure
         {
             Check.ArgumentNotNullOrEmpty(word);
 
-            var setting = (await _settingRepository.GetManyAsync(s => s.Name.Equals(FORBIDDEN_WORDS_SETTING_NAME))).FirstOrDefault();
+            var setting = (await _settingRepository.GetMany(s => s.Name.Equals(FORBIDDEN_WORDS_SETTING_NAME))).FirstOrDefault();
 
             var words = ((List<string>)setting.Value);
 
@@ -34,13 +34,13 @@ namespace PonyUrl.Infrastructure
 
                 setting.SetValue(words);
 
-                await _settingRepository.UpdateAsync(setting);
+                await _settingRepository.Update(setting);
             }
         }
 
         public async Task<List<string>> ForbiddenWords()
         {
-            var words = (await _settingRepository.GetManyAsync(s => s.Name.Equals(FORBIDDEN_WORDS_SETTING_NAME))).FirstOrDefault();
+            var words = (await _settingRepository.GetMany(s => s.Name.Equals(FORBIDDEN_WORDS_SETTING_NAME))).FirstOrDefault();
 
             return words == null ? new List<string>() : (List<string>)words.Value;
         }
@@ -49,7 +49,7 @@ namespace PonyUrl.Infrastructure
         {
             Check.ArgumentNotNullOrEmpty(word);
 
-            var setting = (await _settingRepository.GetManyAsync(s => s.Name.Equals(FORBIDDEN_WORDS_SETTING_NAME))).FirstOrDefault();
+            var setting = (await _settingRepository.GetMany(s => s.Name.Equals(FORBIDDEN_WORDS_SETTING_NAME))).FirstOrDefault();
 
             var words = ((List<string>)setting.Value);
 
@@ -59,7 +59,7 @@ namespace PonyUrl.Infrastructure
 
                 setting.SetValue(words);
 
-                await _settingRepository.UpdateAsync(setting);
+                await _settingRepository.Update(setting);
             }
         }
     }

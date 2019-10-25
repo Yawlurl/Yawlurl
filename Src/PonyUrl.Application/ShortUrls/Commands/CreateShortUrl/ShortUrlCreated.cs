@@ -1,9 +1,7 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using PonyUrl.Common;
 using PonyUrl.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,21 +11,35 @@ namespace PonyUrl.Application.ShortUrls.Commands
     {
         public ShortUrl ShortUrl { get; set; }
 
+
         public class ShortUrlCreatedHandler : INotificationHandler<ShortUrlCreated>
         {
-            private readonly IShortUrlRepository _shortUrlRepository;
+            private readonly ILogger<ShortUrlCreated> _logger;
+            private readonly ISlugRepository _slugRepository;
 
-            public ShortUrlCreatedHandler(IShortUrlRepository shortUrlRepository)
+            public ShortUrlCreatedHandler(ILogger<ShortUrlCreated> logger, ISlugRepository slugRepository)
             {
-                _shortUrlRepository = shortUrlRepository;
+                _logger = logger;
+                _slugRepository = slugRepository;
             }
 
             public async Task Handle(ShortUrlCreated notification, CancellationToken cancellationToken)
             {
-                //Save to database
-                if(Check.IsGuidDefaultOrEmpty(notification.ShortUrl.Id))
+                //TODO: Log
+                if (!Check.IsGuidDefaultOrEmpty(notification.ShortUrl.Id))
                 {
-                    await _shortUrlRepository.InsertAsync(notification.ShortUrl, cancellationToken);
+                    var slug = await _slugRepository.Get(notification.ShortUrl.SlugId);
+
+                    //Activate slug
+                    slug.UpdatedBy = notification.ShortUrl.UpdatedBy;
+                    slug.UpdatedDate = notification.ShortUrl.UpdatedDate;
+
+                    if (!Check.IsGuidDefaultOrEmpty(notification.ShortUrl.Id))
+                    {
+                        slug.Activate();
+                    }
+
+                    await _slugRepository.Update(slug, cancellationToken);
                 }
             }
         }

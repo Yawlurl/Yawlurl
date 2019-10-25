@@ -44,17 +44,17 @@ namespace PonyUrl.Integration.Test.MongoDb
             {
                 testEntity = new TestEntity($"Item{i}");
 
-                await _mongoRepository.InsertAsync(testEntity);
+                await _mongoRepository.Insert(testEntity);
             }
 
-         (await _mongoRepository.GetCountAsync()).Should().BePositive();
+         (await _mongoRepository.Count()).Should().BePositive();
         }
 
         [Fact]
         public async Task MongoDb_CRUD_Test()
         {
             //INSERT
-            TestEntity entity = await _mongoRepository.InsertAsync(testEntity);
+            TestEntity entity = await _mongoRepository.Insert(testEntity);
 
             entity.Id.Should().NotBeEmpty();
 
@@ -62,19 +62,19 @@ namespace PonyUrl.Integration.Test.MongoDb
             entity.Title += " Updated";
             entity.UpdatedDate = DateTime.Now;
 
-            await _mongoRepository.UpdateAsync(entity);
+            await _mongoRepository.Update(entity);
 
             entity.UpdatedDate.Should().BeAfter(entity.CreatedDate);
 
             //GET
-            (await _mongoRepository.GetAllAsync()).Count.Should().BePositive();
-            (await _mongoRepository.GetCountAsync()).Should().BePositive();
-            (await _mongoRepository.GetAsync(entity.Id)).Title.Should().BeEquivalentTo(entity.Title);
+            (await _mongoRepository.GetAll()).Count.Should().BePositive();
+            (await _mongoRepository.Count()).Should().BePositive();
+            (await _mongoRepository.Get(entity.Id)).Title.Should().BeEquivalentTo(entity.Title);
 
 
             //DELETE
-            (await _mongoRepository.DeleteAsync(entity.Id)).Should().BeTrue();
-            (await _mongoRepository.GetAsync(entity.Id)).Should().BeNull();
+            (await _mongoRepository.Delete(entity.Id)).Should().BeTrue();
+            (await _mongoRepository.Get(entity.Id)).Should().BeNull();
 
         }
 

@@ -2,11 +2,9 @@
 using PonyUrl.Domain;
 using System.Threading.Tasks;
 using Xunit;
-using System;
 using FluentAssertions;
 using System.Threading;
-using PonyUrl.Core;
-using MediatR;
+
 
 namespace PonyUrl.Application.Test.ShortUrls.Commands
 {
@@ -18,14 +16,19 @@ namespace PonyUrl.Application.Test.ShortUrls.Commands
 
         public DeleteShortUrlCommandHandlerTest()
         {
-            _createCommandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(),
-                                                                     That<IShortKeyManager>(),
-                                                                     That<ICacheManager>(),
-                                                                     That<IMediator>());
 
-            _deleteCommandHandler = new DeleteShortUrlCommandHandler(That<IShortUrlRepository>(), 
-                                                                     That<ICacheManager>(),
-                                                                     That<IMediator>());
+            _createCommandHandler = new CreateShortUrlCommandHandler(SlugManagerMock,
+                                                               HttpContextAccessorMock,
+                                                               MediatorMock,
+                                                               GlobalSettingsMock,
+                                                               ShortUrlRepositoryMock,
+                                                               UserManagerMock);
+
+            _deleteCommandHandler = new DeleteShortUrlCommandHandler(ShortUrlRepositoryMock,
+                                                                     MediatorMock,
+                                                                     HttpContextAccessorMock,
+                                                                     UserManagerMock,
+                                                                     SlugRepositoryMock);
         }
 
 
@@ -34,18 +37,24 @@ namespace PonyUrl.Application.Test.ShortUrls.Commands
         {
             var shortUrl = await _createCommandHandler.Handle(new CreateShortUrlCommand()
             {
-                LongUrl = "http://www.google.com"
+                LongUrl = "http://www.abc.com"
             },
             CancellationToken.None);
 
             shortUrl.Should().NotBeNull();
-            shortUrl.ShortKey.Should().NotBeNullOrEmpty();
+            shortUrl.SlugKey.Should().NotBeNullOrEmpty();
 
-            await _deleteCommandHandler.Handle(new DeleteShortUrlCommand() { ShortKey = shortUrl.ShortKey }, CancellationToken.None);
+            var slugId = await That<ISlugManager>().GetSlugIdByKeyword(shortUrl.SlugKey);
 
-            var entity = await That<IShortUrlRepository>().GetByShortKeyAsync(shortUrl.ShortKey);
+            slugId.Should().NotBeEmpty();
 
-            entity.Should().BeNull("Entity should be null!");
+            //Delete shorturl
+            await _deleteCommandHandler.Handle(new DeleteShortUrlCommand() { SlugKey = shortUrl.SlugKey }, CancellationToken.None);
+
+            (await That<IShortUrlRepository>().GetBySlug(slugId)).Should().BeNull();
+
+            (await That<ISlugRepository>().GetByKey(shortUrl.SlugKey)).Should().BeNull("Entity should be null!");
+
         }
 
 

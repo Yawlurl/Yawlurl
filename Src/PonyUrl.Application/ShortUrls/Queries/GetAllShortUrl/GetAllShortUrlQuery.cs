@@ -1,10 +1,14 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 
 namespace PonyUrl.Application.ShortUrls.Queries
 {
-    public class GetAllShortUrlQuery : IRequest<ShortUrlListViewModel>
+    public class GetAllShortUrlQuery : IRequest<ShortUrlListDto>
     {
-        public int? Skip { get; set; }
+        [JsonProperty(PropertyName = "index")]
+        public int? Index { get; set; }
+
+        [JsonProperty(PropertyName = "limit")]
         public int? Limit { get; set; }
 
         public GetAllShortUrlQuery()
@@ -12,9 +16,9 @@ namespace PonyUrl.Application.ShortUrls.Queries
 
         }
 
-        public GetAllShortUrlQuery(int skip, int limit)
+        public GetAllShortUrlQuery(int? index, int? limit)
         {
-            Skip = skip;
+            Index = index;
             Limit = limit;
         }
     }

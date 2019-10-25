@@ -1,15 +1,14 @@
 ﻿using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
 using PonyUrl.Application.ShortUrls.Queries;
-using PonyUrl.Domain.Entities;
 using PonyUrl.Domain;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using PonyUrl.Application.ShortUrls.Commands;
-using PonyUrl.Core;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
+using PonyUrl.Infrastructure.AspNetCore.Models;
 
 namespace PonyUrl.Application.Test.ShortUrls.Queries
 {
@@ -20,12 +19,18 @@ namespace PonyUrl.Application.Test.ShortUrls.Queries
 
         public GetAllShortUrlQueryHandlerTest()
         {
-            _commandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(), 
-                                                               That<IShortKeyManager>(),
-                                                               That<ICacheManager>(),
-                                                               That<IMediator>());
+            _commandHandler = new CreateShortUrlCommandHandler(SlugManagerMock,
+                                                               HttpContextAccessorMock,
+                                                               MediatorMock,
+                                                               GlobalSettingsMock,
+                                                               ShortUrlRepositoryMock,
+                                                               UserManagerMock);
 
-            _queryhandler = new GetAllShortUrlQueryHandler(That<IShortUrlRepository>(), That<ICacheManager>());
+            _queryhandler = new GetAllShortUrlQueryHandler(ShortUrlRepositoryMock,
+                                                           UserManagerMock,
+                                                           GlobalSettingsMock,
+                                                           HttpContextAccessorMock, 
+                                                           MediatorMock);
         }
 
         [Fact]
@@ -33,16 +38,16 @@ namespace PonyUrl.Application.Test.ShortUrls.Queries
         {
             var shortUrl = await _commandHandler.Handle(new CreateShortUrlCommand()
             {
-                LongUrl = "http://www.google.com"
+                LongUrl = "http://www.abc.com"
             },
             CancellationToken.None);
 
             shortUrl.Should().NotBeNull();
-            shortUrl.ShortKey.Should().NotBeNullOrEmpty();
+            shortUrl.SlugKey.Should().NotBeNullOrEmpty();
 
             var result = await _queryhandler.Handle(new GetAllShortUrlQuery(), CancellationToken.None);
 
-            result.Should().BeOfType<ShortUrlListViewModel>();
+            result.Should().BeOfType<ShortUrlListDto>();
 
             result.ShortUrls.ToList().Count.Should().BeGreaterThan(0);
         }
