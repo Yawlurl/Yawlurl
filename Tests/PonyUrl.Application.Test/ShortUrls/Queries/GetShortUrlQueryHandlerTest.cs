@@ -1,9 +1,11 @@
 ﻿using FluentAssertions;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using PonyUrl.Application.ShortUrls.Commands;
 using PonyUrl.Application.ShortUrls.Queries;
 using PonyUrl.Core;
 using PonyUrl.Domain;
+using PonyUrl.Infrastructure.AspNetCore.Models;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -17,12 +19,19 @@ namespace PonyUrl.Application.Test.ShortUrls.Queries
         private readonly GetShortUrlQueryHandler _queryhandler;
         public GetShortUrlQueryHandlerTest()
         {
-            _queryhandler = new GetShortUrlQueryHandler(That<IShortUrlRepository>());
+            _queryhandler = new GetShortUrlQueryHandler(ShortUrlRepositoryMock,
+                                                        SlugManagerMock,
+                                                        MediatorMock,
+                                                        GlobalSettingsMock,
+                                                        UserManagerMock,
+                                                        HttpContextAccessorMock);
 
-            _commandHandler = new CreateShortUrlCommandHandler(That<IShortUrlRepository>(),
-                                                               That<IShortKeyManager>(),
-                                                               That<ICacheManager>(),
-                                                               That<IMediator>());
+            _commandHandler = new CreateShortUrlCommandHandler(SlugManagerMock,
+                                                               HttpContextAccessorMock,
+                                                               MediatorMock,
+                                                               GlobalSettingsMock,
+                                                               ShortUrlRepositoryMock,
+                                                               UserManagerMock);
         }
 
         [Fact]
@@ -30,18 +39,18 @@ namespace PonyUrl.Application.Test.ShortUrls.Queries
         {
             var shortUrl = await _commandHandler.Handle(new CreateShortUrlCommand()
             {
-                LongUrl = "http://www.google.com"
+                LongUrl = "http://www.abc.com"
             },
             CancellationToken.None);
 
             shortUrl.Should().NotBeNull();
-            shortUrl.ShortKey.Should().NotBeNullOrEmpty();
+            shortUrl.SlugKey.Should().NotBeNullOrEmpty();
 
-            var result = await _queryhandler.Handle(new GetShortUrlQuery { ShortKey = shortUrl.ShortKey }, CancellationToken.None);
+            var result = await _queryhandler.Handle(new GetShortUrlQuery { SlugKey = shortUrl.SlugKey }, CancellationToken.None);
 
-            result.Should().BeOfType<ShortUrlViewModel>();
+            result.Should().BeOfType<ShortUrlListDto>();
 
-            result.LongUrl.Should().Be("http://www.google.com");
+            result.LongUrl.Should().Be(shortUrl.LongUrl);
 
         }
     }
