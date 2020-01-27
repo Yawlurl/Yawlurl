@@ -12,5 +12,8 @@ namespace YawlUrl.Application.ShortUrls.Commands
 
         [JsonProperty(PropertyName = "long_url")]
         public string LongUrl { get; set; }
+
+        [JsonIgnore]
+        public bool IsRouter { get; set; }
     }
 }

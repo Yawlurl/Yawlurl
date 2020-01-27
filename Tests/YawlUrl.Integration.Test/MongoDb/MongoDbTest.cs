@@ -1,11 +1,9 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using YawlUrl.Infrastructure.MongoDb;
-using System;
-using System.Threading.Tasks;
 using Xunit;
-using System.IO;
+using System;
 using FluentAssertions;
+using System.Threading.Tasks;
+using YawlUrl.Infrastructure.MongoDb;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace YawlUrl.Integration.Test.MongoDb
 {

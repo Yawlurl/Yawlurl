@@ -13,5 +13,8 @@ namespace YawlUrl.Application.ShortUrls.Queries
 
         [JsonProperty(PropertyName = "boost")]
         public bool Boost { get; set; }
+
+        [JsonIgnore]
+        public bool IsRouter { get; set; }
     }
 }

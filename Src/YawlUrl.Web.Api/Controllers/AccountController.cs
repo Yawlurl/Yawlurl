@@ -53,8 +53,8 @@ namespace YawlUrl.Web.Api.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginViewModel model)
+        [Route("token")]
+        public async Task<IActionResult> Token([FromBody] LoginViewModel model)
         {
 
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);

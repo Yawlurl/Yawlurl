@@ -55,6 +55,11 @@ namespace YawlUrl.Application.ShortUrls.Commands
         {
             ValidateRequest(request);
 
+            if (request.IsRouter)
+            {
+                CurrentUser = AnonymousUser.Current();
+            }
+
             //Generate shortUrl
             var shortUrl = new ShortUrl(request.LongUrl)
             {

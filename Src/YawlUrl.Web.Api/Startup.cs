@@ -2,7 +2,6 @@
 using MediatR.Pipeline;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
@@ -12,10 +11,9 @@ using YawlUrl.Application.ShortUrls.Commands;
 using YawlUrl.Application.ShortUrls.Queries;
 using YawlUrl.Infrastructure;
 using YawlUrl.Infrastructure.AspNetCore;
-using YawlUrl.Web.Api.Filters;
-using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
-
+using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Hosting;
 
 namespace YawlUrl.Web.Api
 {
@@ -70,7 +68,7 @@ namespace YawlUrl.Web.Api
             });
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             //ExceptionFilters
             services.AddMvc(options =>
@@ -78,34 +76,35 @@ namespace YawlUrl.Web.Api
                 options.Filters.Add(typeof(ApiExcepitonFilterAttribute));
             });
 
+
+            //Controllers
+            services.AddControllers();
+
         }
 
 
         private void ConfigureSwaggerOptions(SwaggerGenOptions options)
         {
-            options.SwaggerDoc("v1", new Info()
+            options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo()
             {
                 Version = "v1",
                 Title = "YawlUrl API",
-                Description = "YawlUrl Shortener service asp.net core 2.2"
+                Description = $"YawlUrl Shortener service asp.net core {CompatibilityVersion.Version_3_0}"
             });
 
-            // Swagger 2.+ support
-            var security = new Dictionary<string, IEnumerable<string>>
-            {
-                {"Bearer", new string[] { }},
-            };
 
-            options.AddSecurityDefinition("Bearer", new ApiKeyScheme
+            var openApiRequirement = new OpenApiSecurityRequirement();
+            //openApiRequirement.Add(new OpenApiSecurityScheme().
+
+
+            options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
             {
                 Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
                 Name = "Authorization",
-                In = "header",
-                Type = "apiKey"
             });
-            options.AddSecurityRequirement(security);
+            options.AddSecurityRequirement(openApiRequirement);
 
-            options.OperationFilter<SwaggerHeaderFilter>();
+            //options.OperationFilter<SwaggerHeaderFilter>();
 
             // Set the comments path for the Swagger JSON and UI.
             //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -117,33 +116,28 @@ namespace YawlUrl.Web.Api
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+
+            app.UseHttpsRedirection();
 
             //// ===== Use Authentication ======
             app.UseAuthentication();
-
+            app.UseAuthorization();
             //ExceptionHandler
             app.ConfigureExceptionHandler();
 
             //app.UseHttpsRedirection();
+            app.UseRouting();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action}/{id?}");
+            app.UseEndpoints(endpoints => 
+            { 
+                endpoints.MapControllers(); 
             });
-
 
             app.UseSwagger();
             app.UseSwaggerUI(config =>

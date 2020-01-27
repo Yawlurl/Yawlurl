@@ -46,7 +46,7 @@ namespace YawlUrl.Application.ShortUrls.Queries
             var slugId = await CheckAndGetSlugId(request.SlugKey, cancellationToken);
 
             // Get ShortUrl
-            var shortUrlEntity = await CheckAndGetShortUrl(slugId, request.Boost, cancellationToken);
+            var shortUrlEntity = await CheckAndGetShortUrl(slugId, request.Boost, request.IsRouter, cancellationToken);
 
             // Map
             data.MapFromEntity(shortUrlEntity, _globalSetting.RouterDomain);
@@ -73,14 +73,18 @@ namespace YawlUrl.Application.ShortUrls.Queries
             return slugId;
         }
 
-        private async Task<ShortUrl> CheckAndGetShortUrl(Guid slugId, bool boost, CancellationToken cancellationToken)
+        private async Task<ShortUrl> CheckAndGetShortUrl(Guid slugId, bool boost, bool isRouter, CancellationToken cancellationToken)
         {
             //Get shorturl entity
             var shortUrlEntity = await _shortUrlRepository.GetBySlug(slugId, cancellationToken);
 
-            //Check owner
-            Check.That<ApplicationException>(!CurrentUser.IsAdmin() &&
-                !shortUrlEntity.CreatedBy.Equals(CurrentUser.Id), $"This slug not found for the user");
+            if (!isRouter)
+            {
+                //Check owner
+                Check.That<ApplicationException>(!CurrentUser.IsAdmin() &&
+                    !shortUrlEntity.CreatedBy.Equals(CurrentUser.Id), $"This slug not found for the user");
+            }
+
 
             //Set Hits
             if (boost)
