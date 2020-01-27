@@ -3,6 +3,7 @@ using YawlUrl.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace YawlUrl.Web.Api.Core
 {
@@ -28,18 +29,24 @@ namespace YawlUrl.Web.Api.Core
             return this;
         }
 
-        public Output<TData> AddTraceId(string traceId)
+        public Output<TData> AddTrace(string traceId)
         {
             AddMetadata("traceId", traceId);
 
             return this;
         }
 
-        public Output<TData> AddConsumerCode(string consumerCode)
+        public Output<TData> AddConsumer(string consumer)
         {
-            AddMetadata("consumerCode", consumerCode);
+            AddMetadata("consumer", consumer);
             
             return this;
-        }   
+        }
+        
+        public Output<TData> AddActivity(string requestId)
+        {
+            AddMetadata("requestId", requestId);
+            return this;
+        }
     }
 }

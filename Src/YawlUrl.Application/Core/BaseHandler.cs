@@ -49,7 +49,7 @@ namespace YawlUrl.Application
 
                 return currentUser ?? _userManager.FindByNameAsync(_httpContextAccessor.HttpContext.User.Identity.Name).GetAwaiter().GetResult();
             }
-            private set
+            set
             {
                 currentUser = value;
             }

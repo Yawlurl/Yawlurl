@@ -27,6 +27,7 @@ namespace YawlUrl.Infrastructure.AspNetCore
 
         public static void ConfigureAspNetCore(this IServiceCollection services, IConfiguration configuration)
         {
+
             services.AddSingleton<JwtTokenBuilder>();
 
             // ===== Add Jwt Authentication ========

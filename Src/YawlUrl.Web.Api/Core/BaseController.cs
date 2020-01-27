@@ -24,7 +24,7 @@ namespace YawlUrl.Web.Api.Core
         {
             get
             {
-                return HttpContext.Request.GetHeaderValue<string>("consumerCode");
+                return HttpContext.Request.GetHeaderValue<string>("x-consumer");
             }
         }
 
@@ -32,7 +32,7 @@ namespace YawlUrl.Web.Api.Core
         {
             get
             {
-                return HttpContext.Request.GetHeaderValue<string>("traceId");
+                return HttpContext.Request.GetHeaderValue<string>("x-traceid");
             }
         }
 
@@ -40,7 +40,7 @@ namespace YawlUrl.Web.Api.Core
         {
             if (Check.IsNull(data)) return NoContent();
 
-            var result = new Output<T>(data).AddConsumerCode(ConsumerCode).AddTraceId(TraceId);
+            var result = new Output<T>(data).AddConsumer(ConsumerCode).AddTrace(TraceId).AddActivity(HttpContext?.TraceIdentifier);
          
             return Ok(result);
         }
@@ -49,7 +49,7 @@ namespace YawlUrl.Web.Api.Core
         {
             if (Check.IsNull(data)) return NoContent();
 
-            var result = new Output<T>(data).AddConsumerCode(ConsumerCode).AddTraceId(TraceId);
+            var result = new Output<T>(data).AddConsumer(ConsumerCode).AddTrace(TraceId).AddActivity(HttpContext?.TraceIdentifier);
 
             return StatusCode(statusCode, result);
         }
