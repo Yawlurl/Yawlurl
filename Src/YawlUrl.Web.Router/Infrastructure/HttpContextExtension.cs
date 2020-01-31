@@ -10,7 +10,7 @@ namespace YawlUrl.Web.Router
     {
         public static bool TryGetSlug(this HttpContext httpContext,out string slug)
         {
-            bool result;
+            bool result = true;
             try
             {
                 slug = httpContext.Request.Path.HasValue && 

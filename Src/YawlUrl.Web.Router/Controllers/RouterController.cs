@@ -6,11 +6,20 @@ using YawlUrl.Web.Router.Core;
 using YawlUrl.Web.Router.Models;
 using YawlUrl.Application.ShortUrls.Queries;
 using System;
+using Microsoft.Extensions.Logging;
+using YawlUrl.Application.ShortUrls.Commands;
 
 namespace YawlUrl.Web.Router.Controllers
 {
     public class RouterController : BaseController
     {
+        private readonly ILogger<RouterController> _logger;
+
+        public RouterController(ILogger<RouterController> logger)
+        {
+            _logger = logger;
+        }
+
         public async Task<IActionResult> Index()
         {
             if (HttpContext.TryGetSlug(out string slug))
@@ -31,8 +40,7 @@ namespace YawlUrl.Web.Router.Controllers
                 }
                 catch (Exception ex)
                 {
-
-
+                    _logger.LogError(ex, $"Router Index Error");
                 }
 
             }
@@ -43,6 +51,23 @@ namespace YawlUrl.Web.Router.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        [Route("/generate")]
+        public async Task<IActionResult> GenerateYawlLink([FromBody] GenerateUrlModel generateUrlModel)
+        {
+            
+            Check.IsValidUrl(generateUrlModel.LongUrl);
+
+            var yawlUrl = await Mediator.Send(new CreateShortUrlCommand()
+            {
+                IsRouter = true,
+                LongUrl = generateUrlModel.LongUrl,
+                SlugKey = string.Empty
+            }).ConfigureAwait(false);
+
+            return Ok(yawlUrl.YawlLink);
         }
     }
 }

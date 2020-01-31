@@ -17,14 +17,14 @@
         </div>
         <div class="col-10">
             <div class="input-group mb-3">
-                <input type="text" class="form-control form-control-lg" placeholder="Shorten your link" aria-label="Shorten your link" aria-describedby="button-addon2">
+                <input id="txtLongUrl" type="text" class="form-control form-control-lg" placeholder="Shorten your link" aria-label="Shorten your link" aria-describedby="button-addon2">
                 <div class="input-group-append">
-                    <button id="button-shorten" class="btn btn-outline-primary" type="button">Shorten</button>
+                    <button id="button-shorten" class="btn btn-outline-primary" type="button" onclick="yawl.router.default.clickShorten();">Shorten</button>
                 </div>
             </div>
-            <div class="alert alert-success" role="alert">
-                Success! Your short url <a href="#" class="alert-link">an example link</a>.
-                <button class="btn btn-sm btn-info float-right"> Copy</button>
+            <div id="resultBar" class="alert alert-success invisible" role="alert">
+                Success! Your short url <a id="shortenLink" href="#" target="_blank" class="alert-link">an example link</a>.
+                <button class="btn btn-sm btn-info float-right" > Copy</button>
             </div>
         </div>
         <div class="col">
@@ -33,8 +33,3 @@
     </div>
 </div>
 
-@section Scripts {
-    <script type="text/javascript">
-       alert("Hello")
-    </script>
-}
