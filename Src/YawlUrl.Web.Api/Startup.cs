@@ -1,19 +1,19 @@
 ﻿using MediatR;
 using MediatR.Pipeline;
 using System.Reflection;
+using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using YawlUrl.Application.ShortUrls.Commands;
-using YawlUrl.Application.ShortUrls.Queries;
 using YawlUrl.Infrastructure;
 using YawlUrl.Infrastructure.AspNetCore;
+using YawlUrl.Application.ShortUrls.Commands;
+using YawlUrl.Application.ShortUrls.Queries;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Microsoft.OpenApi.Models;
-using Microsoft.Extensions.Hosting;
 
 namespace YawlUrl.Web.Api
 {
@@ -78,8 +78,8 @@ namespace YawlUrl.Web.Api
 
 
             //Controllers
-            services.AddControllers();
-
+            services.AddControllers().AddNewtonsoftJson();
+            
         }
 
 
@@ -125,9 +125,10 @@ namespace YawlUrl.Web.Api
 
             app.UseHttpsRedirection();
 
-            //// ===== Use Authentication ======
+            // Use Authentication
             app.UseAuthentication();
             app.UseAuthorization();
+            
             //ExceptionHandler
             app.ConfigureExceptionHandler();
 
