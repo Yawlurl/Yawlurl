@@ -6,4 +6,4 @@ Smart and Easy URL Shortener system
 
 | Master | Develop |
 |--------|---------|
-| <img src="https://ci.appveyor.com/api/projects/status/github/yawlurl/yawlurl?branch=master&svg=true" />    | <img src="https://ci.appveyor.com/api/projects/status/github/yawlurl/yawlurl?branch=develop&svg=true" />   |
+| <img src="https://ci.appveyor.com/api/projects/status/gy5y84vsgnia42wb/branch/master?svg=true" />    | <img src="https://ci.appveyor.com/api/projects/status/mcb8k62d9alpoya2/branch/develop?svg=true" />   |
