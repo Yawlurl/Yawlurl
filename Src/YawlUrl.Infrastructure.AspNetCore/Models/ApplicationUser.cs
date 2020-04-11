@@ -25,7 +25,7 @@ namespace YawlUrl.Infrastructure.AspNetCore.Models
 
         public static ApplicationUser Current()
         {
-            return anonymousUser ?? new ApplicationUser();
+            return anonymousUser ?? new AnonymousUser();
         }
     }
 }

@@ -1,16 +1,21 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-var yawl = yawl || {};
-
+﻿var yawl = yawl || {};
 
 yawl.router = (function () {
 
     var init = function () {
-        $(".btnCopy").click(function () {
-            alert("Clicked Copy");
+        $(".button-copy").click(function () {
+            $(".button-copy").button('toggle');
+            copyToClipboard($("#shortenLink").text());
+            $(".button-copy").button('toggle');
         });
+    };
+
+    var copyToClipboard = function (text) {
+        var $tempInput = $("<textarea>");
+        $("body").append($tempInput);
+        $tempInput.val(text).select();
+        document.execCommand("copy");
+        $tempInput.remove();
     };
 
     return {
@@ -37,6 +42,9 @@ yawl.router.default = (function () {
                 alert("Generated link >" + data);
             });
 
+            $("#button-shorten").prop('disabled', true);
+            $("#resultBar").fadeOut(100).addClass("d-none");
+
             var settings = {
                 "async": true,
                 "crossDomain": true,
@@ -50,12 +58,17 @@ yawl.router.default = (function () {
                 "data": JSON.stringify({"LongUrl": $("#txtLongUrl").val()})
             };
 
+            $("#button-shorten .spinner-border").fadeIn(100).removeClass(" d-none");
+            $("#button-shorten .shorten-button-text").text("Working");
             $.ajax(settings).done(function (response) {
-                console.log(response);
-                $("#shortenLink").attr("href", response);
-                $("#shortenLink").text(response);
-                $("#resultBar").toggleClass("invisible", false);
-                $("#resultBar").toggleClass("visible", true);
+                const shortUrl = response.url;
+                $("#shortenLink").attr("href", shortUrl);
+                $("#shortenLink").text(shortUrl);
+                $("#resultBar").fadeIn(100).removeClass("d-none");
+
+                $("#button-shorten .spinner-border").fadeOut(100).addClass(" d-none");
+                $("#button-shorten .shorten-button-text").text("Shorten");
+                $("#button-shorten").prop('disabled', false);
             });
 
 

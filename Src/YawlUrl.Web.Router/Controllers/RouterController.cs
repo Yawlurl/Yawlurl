@@ -1,13 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using YawlUrl.Common;
 using YawlUrl.Web.Router.Core;
 using YawlUrl.Web.Router.Models;
 using YawlUrl.Application.ShortUrls.Queries;
-using System;
-using Microsoft.Extensions.Logging;
-using YawlUrl.Application.ShortUrls.Commands;
 
 namespace YawlUrl.Web.Router.Controllers
 {
@@ -18,7 +17,9 @@ namespace YawlUrl.Web.Router.Controllers
         public RouterController(ILogger<RouterController> logger)
         {
             _logger = logger;
+          
         }
+        
 
         public async Task<IActionResult> Index()
         {
@@ -55,19 +56,16 @@ namespace YawlUrl.Web.Router.Controllers
 
         [HttpPost]
         [Route("/generate")]
-        public async Task<IActionResult> GenerateYawlLink([FromBody] GenerateUrlModel generateUrlModel)
+        public async Task<IActionResult> GenerateYawlLink([FromBody] GenerateUrlModel model)
         {
-            
-            Check.IsValidUrl(generateUrlModel.LongUrl);
+            if (!ModelState.IsValid)
+                return BadRequest();
 
-            var yawlUrl = await Mediator.Send(new CreateShortUrlCommand()
-            {
-                IsRouter = true,
-                LongUrl = generateUrlModel.LongUrl,
-                SlugKey = string.Empty
-            }).ConfigureAwait(false);
+            Check.ArgumentNotUrl(model.LongUrl);
 
-            return Ok(yawlUrl.YawlLink);
+            var yawlUrl = await Mediator.Send(model.ToCommandModel()).ConfigureAwait(false);
+
+            return Ok(new { url = yawlUrl.YawlLink });
         }
     }
 }

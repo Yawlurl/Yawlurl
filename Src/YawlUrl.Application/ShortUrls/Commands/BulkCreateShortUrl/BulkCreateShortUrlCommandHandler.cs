@@ -72,7 +72,7 @@ namespace YawlUrl.Application.ShortUrls.Commands.BulkCreateShortUrl
             await _shortUrlRepository.BulkInsert(shortUrls, cancellationToken);
 
             // Data
-            var result = shortUrls.AsQueryable().Select(s => new ShortUrlDto().MapFromEntity(s, _globalSettings.RouterDomain)).ToList();
+            var result = shortUrls.AsQueryable().Select(s => ShortUrlDto.MapFromEntity(s, _globalSettings.RouterDomain)).ToList();
 
             //Publish Event
             await _mediator.Publish(new ShortUrlsCreated { ShortUrls = shortUrls });

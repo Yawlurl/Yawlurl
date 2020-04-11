@@ -1,35 +1,27 @@
-﻿<div class="container">
-    <div class="row">
-        <div class="row">
-            <div class="col">&nbsp;</div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="text-center">
-                <h1 class="display-4">Yawl Url</h1>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
+﻿
+<div class="row">
+    <div class="col-lg-12">
 
-        </div>
-        <div class="col-10">
-            <div class="input-group mb-3">
-                <input id="txtLongUrl" type="text" class="form-control form-control-lg" placeholder="Shorten your link" aria-label="Shorten your link" aria-describedby="button-addon2">
-                <div class="input-group-append">
-                    <button id="button-shorten" class="btn btn-outline-primary" type="button" onclick="yawl.router.default.clickShorten();">Shorten</button>
-                </div>
-            </div>
-            <div id="resultBar" class="alert alert-success invisible" role="alert">
-                Success! Your short url <a id="shortenLink" href="#" target="_blank" class="alert-link">an example link</a>.
-                <button class="btn btn-sm btn-info float-right" > Copy</button>
-            </div>
-        </div>
-        <div class="col">
-
-        </div>
     </div>
 </div>
 
+<div class="alert alert-secondary" role="alert">
+    <h4 class="alert-heading">Welcome!</h4>
+    <p>Aww yeah, you successfully read this important alert message.</p>
+    <hr>
+
+    <div class="input-group mb-3">
+        <input id="txtLongUrl" type="text" class="form-control form-control-lg" placeholder="Shorten your link" aria-label="Shorten your link" aria-describedby="button-addon2">
+        <div class="input-group-append">
+            <button id="button-shorten" class="btn btn-primary" type="button" onclick="yawl.router.default.clickShorten();">
+                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                <span class="shorten-button-text">Shorten</span>
+            </button>
+        </div>
+    </div>
+    <div id="resultBar" class="alert alert-primary d-none" role="alert">
+        Success! Your short url <a id="shortenLink" href="#" target="_blank" class="alert-link"></a>
+        <button class="btn btn-sm btn-outline-success float-right button-copy"> Copy</button>
+    </div>
+
+</div>

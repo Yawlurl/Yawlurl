@@ -40,7 +40,6 @@ namespace YawlUrl.Application.ShortUrls.Queries
 
         public override async Task<ShortUrlDto> Handle(GetShortUrlQuery request, CancellationToken cancellationToken)
         {
-            var data = new ShortUrlDto();
 
             // Get SlugId
             var slugId = await CheckAndGetSlugId(request.SlugKey, cancellationToken);
@@ -48,13 +47,10 @@ namespace YawlUrl.Application.ShortUrls.Queries
             // Get ShortUrl
             var shortUrlEntity = await CheckAndGetShortUrl(slugId, request.Boost, request.IsRouter, cancellationToken);
 
-            // Map
-            data.MapFromEntity(shortUrlEntity, _globalSetting.RouterDomain);
-
             // @Event
             await _mediator.Publish(new ShortUrlQueried() { ShortUrl = shortUrlEntity }, cancellationToken);
 
-            return data;
+            return ShortUrlDto.MapFromEntity(shortUrlEntity, _globalSetting.RouterDomain); ;
         }
 
         #region Methods

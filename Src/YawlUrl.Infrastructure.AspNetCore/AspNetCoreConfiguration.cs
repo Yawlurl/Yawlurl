@@ -73,6 +73,7 @@ namespace YawlUrl.Infrastructure.AspNetCore
 
             //GlobalSettings
             services.AddSingleton<IGlobalSettings>(new GlobalSettings() { RouterDomain = Convert.ToString(configuration[ROUTER_DOMAIN]) });
+
         }
 
     }

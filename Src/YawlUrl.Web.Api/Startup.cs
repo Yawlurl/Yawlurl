@@ -79,6 +79,8 @@ namespace YawlUrl.Web.Api
 
             //Controllers
             services.AddControllers().AddNewtonsoftJson();
+
+            
             
         }
 
@@ -146,6 +148,8 @@ namespace YawlUrl.Web.Api
                 config.SwaggerEndpoint("/swagger/v1/swagger.json", "YawlUrl API");
                 //s.RoutePrefix = string.Empty;
             });
+
+            
         }
     }
 }

@@ -49,11 +49,7 @@ namespace YawlUrl.Web.Router
 
             // Add MediatR
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>));
-            services.AddMediatR(typeof(GetShortUrlQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(GetAllShortUrlQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(CreateShortUrlCommandHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(DeleteShortUrlCommandHandler).GetTypeInfo().Assembly);
-
+            services.AddMediatR(typeof(Application.BaseHandler<,>).GetTypeInfo().Assembly);
             //Controllers
             services.AddControllers();
 
@@ -75,7 +71,8 @@ namespace YawlUrl.Web.Router
 
             app.UseRouting();
 
-            app.UseEndpoints(endpoints => {
+            app.UseEndpoints(endpoints =>
+            {
                 endpoints.MapControllerRoute("Root", "/{slug}", new { controller = "Router", action = "Index", slug = UrlParameter.Optional });
             });
         }

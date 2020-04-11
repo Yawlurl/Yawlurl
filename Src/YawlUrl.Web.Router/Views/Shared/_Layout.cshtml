@@ -18,8 +18,18 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
+    <!-- Image and text -->
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="~/img/yawlurl_logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+            Yawl Url
+        </a>
+    </nav>
+    <div class="row">
+        <div class="col">&nbsp;</div>
+    </div>
     <div class="container">
-        <partial name="_CookieConsentPartial" />
+        @*<partial name="_CookieConsentPartial" />*@
         <main role="main" class="pb-5">
             @RenderBody()
         </main>
@@ -28,7 +38,7 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2019 - YawlUrl, All rights reserved.
-            
+
         </div>
     </footer>
 
@@ -52,7 +62,7 @@
         </script>
         <script src="~/lib/vue/vue.min.js"></script>
     </environment>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="false"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

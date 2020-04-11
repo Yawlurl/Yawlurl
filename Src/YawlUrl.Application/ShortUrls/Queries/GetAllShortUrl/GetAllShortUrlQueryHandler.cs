@@ -47,7 +47,7 @@ namespace YawlUrl.Application.ShortUrls.Queries
             List<ShortUrl> list = await GetShortUrls(request, totalCount);
 
             if (list.Any())
-                result.ShortUrls = list.AsQueryable().Select(s => new ShortUrlDto().MapFromEntity(s, _globalSettings.RouterDomain));
+                result.ShortUrls = list.AsQueryable().Select(s => ShortUrlDto.MapFromEntity(s, _globalSettings.RouterDomain));
 
             // @Event
             await _mediator.Publish(new ShortUrlsQueried() { ShortUrls = list }, cancellationToken);
