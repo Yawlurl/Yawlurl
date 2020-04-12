@@ -2,7 +2,7 @@
   style="float:left;"/>
     YAWL URL</h1>
 
-Yawlurl is smart and easy url shortener system. It is a product that you can run in your own environment developed with asp.net core. The word meaning of Yawl is a small sail that briefly guides the ship. If you are more curious about the meaning of yawl, you can look [wikipedia](https://en.wikipedia.org/wiki/Yawl).
+:link: Yawlurl is smart and easy url shortener system. It is a product that you can run in your own environment developed with asp.net core. The word meaning of Yawl is a small sail that briefly guides the ship. :shipit:
 
 | Master | Develop |
 |--------|---------|
@@ -15,9 +15,9 @@ Yawlurl is smart and easy url shortener system. It is a product that you can run
 * **Docker support** Docker is a tool designed to make it easier to create, deploy, and run applications by using containers.
 
 ## Core components
-  * **Router** is performs basic routing operations
-  * **Api** provides communication with different application. (Coming Soon)
-  * **App** is a dashboard that provides application management and monitors the application. (Soon)
+  * :heavy_check_mark: **Router** is performs basic routing operations 
+  * :soon: **Api** provides communication with different application. 
+  * :soon: **App** is a dashboard that provides application management and monitors the application.
 
 # Beta Preview of Router Home Page
 
