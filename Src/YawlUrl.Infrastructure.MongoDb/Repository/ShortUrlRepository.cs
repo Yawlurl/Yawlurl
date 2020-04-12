@@ -13,7 +13,7 @@ namespace YawlUrl.Infrastructure.MongoDb
     {
         public ShortUrlRepository(IMongoDbContext mongoDbContext) : base(mongoDbContext)
         {
-            
+
         }
 
         public async Task<ShortUrl> GetBySlug(Guid slugId, CancellationToken cancellationToken = default(CancellationToken))
@@ -23,7 +23,7 @@ namespace YawlUrl.Infrastructure.MongoDb
 
         public async Task<string> GetTargetUrlOnly(Guid slugId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return (await Collection.Find(s=> s.SlugId.Equals(slugId)).
+            return (await Collection.Find(s => s.SlugId.Equals(slugId)).
                 Project<ShortUrl>(Builders<ShortUrl>.Projection.Include(s => s.LongUrl)).SingleOrDefaultAsync(cancellationToken)).LongUrl;
         }
 
@@ -65,5 +65,9 @@ namespace YawlUrl.Infrastructure.MongoDb
             return Check.IsNullOrEmpty(userId) ? await Count(cancelationToken) : await Collection.CountDocumentsAsync(s => s.CreatedBy.Equals(userId));
         }
 
+        public async Task<ShortUrl> GetShortUrlByLongUrl(string longUrl, CancellationToken cancellationToken = default)
+        {
+            return await Collection.Find(s => s.LongUrl.Equals(longUrl)).FirstOrDefaultAsync(cancellationToken);
+        }
     }
 }

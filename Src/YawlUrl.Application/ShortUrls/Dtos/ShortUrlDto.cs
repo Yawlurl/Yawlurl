@@ -41,20 +41,22 @@ namespace YawlUrl.Application
             }
         }
 
-        public ShortUrlDto MapFromEntity(ShortUrl entity, string routerDomain = "")
+        public static ShortUrlDto MapFromEntity(ShortUrl entity, string routerDomain = "")
         {
             Check.ArgumentNotNull(entity);
-
-            Id = entity.Id;
-            SlugId = entity.SlugId;
-            LongUrl = entity.LongUrl;
-            Hits = entity.Hits;
-            SlugKey = entity.SlugKey;
+            var dto = new ShortUrlDto
+            {
+                Id = entity.Id,
+                SlugId = entity.SlugId,
+                LongUrl = entity.LongUrl,
+                Hits = entity.Hits,
+                SlugKey = entity.SlugKey
+            };
             if (Check.IsValidUrl(routerDomain))
             {
-                YawlLink = $"{routerDomain.TrimEnd('/')}/{entity.SlugKey}";
+                dto.YawlLink = $"{routerDomain.TrimEnd('/')}/{entity.SlugKey}";
             }
-            return this;
+            return dto;
         }
     }
 }

@@ -13,13 +13,12 @@ using YawlUrl.Domain.Core;
 
 namespace YawlUrl.Application.ShortUrls.Commands
 {
-    public class CreateShortUrlCommandHandler : BaseHandler<CreateShortUrlCommand,ShortUrlDto>
+    public class CreateShortUrlCommandHandler : BaseHandler<CreateShortUrlCommand, ShortUrlDto>
     {
         #region Fields
         private readonly ISlugManager _slugManager;
         private readonly CreateShortUrlValidator _validator;
         private readonly IMediator _mediator;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IShortUrlRepository _shortUrlRepository;
         private readonly IGlobalSettings _globalSettings;
         #endregion
@@ -51,13 +50,21 @@ namespace YawlUrl.Application.ShortUrls.Commands
         }
         #endregion
 
-        public override async Task<ShortUrlDto> Handle(CreateShortUrlCommand request, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<ShortUrlDto> Handle(CreateShortUrlCommand request, CancellationToken cancellationToken = default)
         {
             ValidateRequest(request);
-
+            
             if (request.IsRouter)
             {
                 CurrentUser = AnonymousUser.Current();
+
+                // Only check url dublication for anonymous user
+                var existUrl = await _shortUrlRepository.GetShortUrlByLongUrl(request.LongUrl, cancellationToken);
+
+                if (Check.IsNotNull(existUrl))
+                {
+                    return ShortUrlDto.MapFromEntity(existUrl, _globalSettings.RouterDomain);
+                }
             }
 
             //Generate shortUrl
@@ -77,15 +84,11 @@ namespace YawlUrl.Application.ShortUrls.Commands
             //Created Event
             await _mediator.Publish(new ShortUrlCreated { ShortUrl = shortUrl }, cancellationToken);
 
-            var shortUrlDto = new ShortUrlDto();
-
-            shortUrlDto.MapFromEntity(shortUrl, _globalSettings.RouterDomain);
-            
-            return shortUrlDto;
+            return ShortUrlDto.MapFromEntity(shortUrl, _globalSettings.RouterDomain); ;
         }
 
         #region Private Methods
-        private async Task<Slug> CreateSlug(string slug, CancellationToken cancellationToken = default(CancellationToken))
+        private async Task<Slug> CreateSlug(string slug, CancellationToken cancellationToken = default)
         {
             var slugEntity = Check.IsNullOrEmpty(slug) ? await _slugManager.Create(CurrentUser, string.Empty, true, cancellationToken)
                                                        : await _slugManager.Create(CurrentUser, slug, false, cancellationToken);
