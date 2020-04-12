@@ -10,12 +10,26 @@
 }
 else
 {
-    <partial name="_DefaultPartial" />
+    <partial name="_QuickPartial" />
 }
 
 
 @section Scripts {
     <script type="text/javascript">
-        yawl.router.init();
+        require(['jquery', 'main'], function ($) {
+
+            $(function () {
+                console.log("Dom Ready!");
+
+                console.log(yawl)
+                if (yawl) {
+                    yawl.router.init();
+                }
+
+
+            })
+        });
+
+       
     </script>
 }

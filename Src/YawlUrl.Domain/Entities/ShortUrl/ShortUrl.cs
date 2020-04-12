@@ -63,6 +63,11 @@ namespace YawlUrl.Domain
             SlugKey = slug.Key;
         }
 
+        public bool IsAnonymous()
+        {
+            return CreatedBy.Equals(Guid.Empty.ToString());
+        }
+
         #region Tags Methods
 
         public void AddTag(string tag)

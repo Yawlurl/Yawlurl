@@ -1,13 +1,13 @@
 ﻿using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using YawlUrl.Domain;
-using YawlUrl.Common;
+using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using YawlUrl.Infrastructure.AspNetCore.Models;
-using System;
+using YawlUrl.Common;
+using YawlUrl.Domain;
 using YawlUrl.Domain.Core;
+using YawlUrl.Infrastructure.AspNetCore.Models;
 
 namespace YawlUrl.Application.ShortUrls.Queries
 {
@@ -48,7 +48,7 @@ namespace YawlUrl.Application.ShortUrls.Queries
             var shortUrlEntity = await CheckAndGetShortUrl(slugId, request.Boost, request.IsRouter, cancellationToken);
 
             // @Event
-            await _mediator.Publish(new ShortUrlQueried() { ShortUrl = shortUrlEntity }, cancellationToken);
+            _mediator.Publish(new ShortUrlQueried() { ShortUrl = shortUrlEntity }, cancellationToken).Forget();
 
             return ShortUrlDto.MapFromEntity(shortUrlEntity, _globalSetting.RouterDomain); ;
         }
