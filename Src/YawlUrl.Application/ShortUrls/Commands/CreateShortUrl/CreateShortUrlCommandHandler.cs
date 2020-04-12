@@ -53,13 +53,13 @@ namespace YawlUrl.Application.ShortUrls.Commands
         public override async Task<ShortUrlDto> Handle(CreateShortUrlCommand request, CancellationToken cancellationToken = default)
         {
             ValidateRequest(request);
-            
+
             if (request.IsRouter)
             {
                 CurrentUser = AnonymousUser.Current();
 
                 // Only check url dublication for anonymous user
-                var existUrl = await _shortUrlRepository.GetShortUrlByLongUrl(request.LongUrl, cancellationToken);
+                var existUrl = await _shortUrlRepository.GetUserShortUrlByLongUrl(request.LongUrl, CurrentUser.UserId, cancellationToken);
 
                 if (Check.IsNotNull(existUrl))
                 {
@@ -82,7 +82,7 @@ namespace YawlUrl.Application.ShortUrls.Commands
             await _shortUrlRepository.InsertOrUpdate(shortUrl, cancellationToken);
 
             //Created Event
-            await _mediator.Publish(new ShortUrlCreated { ShortUrl = shortUrl }, cancellationToken);
+            _mediator.Publish(new ShortUrlCreated { ShortUrl = shortUrl }, cancellationToken).Forget();
 
             return ShortUrlDto.MapFromEntity(shortUrl, _globalSettings.RouterDomain); ;
         }

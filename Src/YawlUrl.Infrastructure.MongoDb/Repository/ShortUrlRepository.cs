@@ -65,9 +65,9 @@ namespace YawlUrl.Infrastructure.MongoDb
             return Check.IsNullOrEmpty(userId) ? await Count(cancelationToken) : await Collection.CountDocumentsAsync(s => s.CreatedBy.Equals(userId));
         }
 
-        public async Task<ShortUrl> GetShortUrlByLongUrl(string longUrl, CancellationToken cancellationToken = default)
+        public async Task<ShortUrl> GetUserShortUrlByLongUrl(string longUrl, string userId, CancellationToken cancellationToken = default)
         {
-            return await Collection.Find(s => s.LongUrl.Equals(longUrl)).FirstOrDefaultAsync(cancellationToken);
+            return await Collection.Find(s => s.LongUrl.Equals(longUrl) && s.CreatedBy.Equals(userId)).FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace YawlUrl.Application.ShortUrls.Commands
                                             IMediator mediator,
                                             IHttpContextAccessor httpContextAccessor,
                                             UserManager<ApplicationUser> userManager,
-                                            ISlugRepository slugRepository) 
+                                            ISlugRepository slugRepository)
             : base(httpContextAccessor, userManager)
         {
             _shortUrlRepository = shortUrlRepository;
@@ -49,7 +49,7 @@ namespace YawlUrl.Application.ShortUrls.Commands
             await DeleteShortUrl(shortUrl);
 
             //Publish Event and delete slug
-            await _mediator.Publish(new ShortUrlDeleted { ShortUrl = shortUrl });
+            _mediator.Publish(new ShortUrlDeleted { ShortUrl = shortUrl }).Forget();
 
             return true;
         }

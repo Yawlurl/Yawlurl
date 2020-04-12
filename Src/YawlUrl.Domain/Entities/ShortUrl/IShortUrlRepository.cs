@@ -22,6 +22,6 @@ namespace YawlUrl.Domain
 
         Task<long> GetCountByUser(string userId, CancellationToken cancelationToken = default);
 
-        Task<ShortUrl> GetShortUrlByLongUrl(string longUrl, CancellationToken cancellationToken = default);
+        Task<ShortUrl> GetUserShortUrlByLongUrl(string longUrl, string userId, CancellationToken cancellationToken = default);
     }
 }
