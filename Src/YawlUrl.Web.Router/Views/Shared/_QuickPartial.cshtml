@@ -1,0 +1,41 @@
+﻿<div class="row">
+    <div class="col-12">
+        <div id="shortPanel" class="card">
+            <div class="card-status bg-blue-lighter"></div>
+            <div class="card-header">
+                <h3 class="card-title">Create Shorturl quickly!</h3>
+                <div class="card-options">
+                    <span class="tag float-right">You can use keyboard paste shortcut. e.g Ctrl+V (Windows, Linux)/ Cmd + V (macOS)</span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="dimmer">
+                    <div class="loader"></div>
+                    <div class="dimmer-content">
+                        <div class="input-group mb-3">
+                            <input id="txtLongUrl" type="text" class="form-control form-control-lg" placeholder="Shorten your link" aria-label="Shorten your link" aria-describedby="button-addon2">
+                            <div class="input-group-append">
+                                <button id="button-shorten" class="btn btn-primary" type="button">
+                                    <span class="shorten-button-text">SHORTEN</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-alert alert alert-danger mb-0 d-none">
+
+            </div>
+
+            <div id="resultBar" class="card-footer bg-green-lightest d-none">
+
+                <strong><i class="fe fe-check mr-2" aria-hidden="true"></i> Success!</strong> Your short url <a id="shortenLink" href="#" target="_blank" class="alert-link"></a>
+                <button class="btn btn-pill btn-sm btn-green float-right button-copy"><i class="fe fe-copy "></i> COPY</button>
+
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -5,65 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Yawl Url</title>
 
-    <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
-              crossorigin="anonymous"
-              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"/>
-    </environment>
-    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="./assets/js/require.min.js"></script>
+    <script>
+        requirejs.config({
+            baseUrl: '.'
+        });
+    </script>
+    <!-- Dashboard Core -->
+    <link href="./assets/css/dashboard.css" rel="stylesheet" />
+    <script src="~/assets/js/site.js"></script>
+    <!-- c3.js Charts Plugin -->
+    <link href="./assets/plugins/charts-c3/plugin.css" rel="stylesheet" />
+    <script src="./assets/plugins/charts-c3/plugin.js"></script>
+    <!-- Google Maps Plugin -->
+    <link href="./assets/plugins/maps-google/plugin.css" rel="stylesheet" />
+    <script src="./assets/plugins/maps-google/plugin.js"></script>
+    <!-- Input Mask Plugin -->
+    <script src="./assets/plugins/input-mask/plugin.js"></script>
 </head>
-<body>
-    <!-- Image and text -->
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="#">
-            <img src="~/img/yawlurl_logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
-            Yawl Url
-        </a>
-    </nav>
-    <div class="row">
-        <div class="col">&nbsp;</div>
-    </div>
-    <div class="container">
-        @*<partial name="_CookieConsentPartial" />*@
-        <main role="main" class="pb-5">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2019 - YawlUrl, All rights reserved.
-
+<body class="">
+    <div class="page">
+        <div class="page-main">
+            <div class="header py-4">
+                <div class="container">
+                    <div class="d-flex">
+                        <a class="header-brand" href="./index.html">
+                            <img src="~/img/yawlurl_logo.png" class="header-brand-img" alt="tabler logo"> Yawlurl
+                        </a>
+                        <div class="d-flex order-lg-2 ml-auto">
+                            <div class="nav-item d-none d-md-flex">
+                                <a href="javascript:;" class="btn btn-sm btn-orange" target="_blank">Beta</a>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="my-3 my-md-5">
+                <div class="container">
+                    @RenderBody()
+                </div>
+            </div>
         </div>
-    </footer>
-
-    <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-        <script src="~/lib/vue/vue.js"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
-        </script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o">
-        </script>
-        <script src="~/lib/vue/vue.min.js"></script>
-    </environment>
-    <script src="~/js/site.js" asp-append-version="false"></script>
-
+        
+        <footer class="footer">
+            <div class="container">
+                <div class="row align-items-center flex-row-reverse">
+                    <div class="col-auto ml-lg-auto">
+                        <div class="row align-items-center">
+                           
+                          
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-auto mt-3 mt-lg-0 text-center">
+                        Copyright © 2020 <a href=".">Yawlurl</a>. All rights reserved.
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
