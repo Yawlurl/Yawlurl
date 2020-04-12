@@ -33,6 +33,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{12F71C8F-8BE4-4BA9-9C67-F93F47509934}"
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Infrastructure.AspNetCore", "Src\YawlUrl.Infrastructure.AspNetCore\YawlUrl.Infrastructure.AspNetCore.csproj", "{A5190DA6-3269-4A00-83F1-3D3241C9E30E}"

@@ -1,15 +1,5 @@
 ﻿version: '3.4'
 services:
-  yawlapi:
-    image: mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim
-    build:
-      context: .
-      dockerfile: Src/YawlUrl.Web.Api/Dockerfile
-    ports:
-      - 8080:80
-    depends_on:
-      - yawldb
-      - yawlrouter
   yawlrouter:
     image: mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim
     build:
@@ -17,6 +7,8 @@ services:
       dockerfile: Src/YawlUrl.Web.Router/Dockerfile
     ports:
       - 5000:80
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Staging
     depends_on:
      - yawldb
   yawldb:
