@@ -48,6 +48,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{1F553B02-C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{2B5C13F8-2C52-4308-A9A7-E60618FA685B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{7348C73B-9B16-4D1D-B303-F98788AF0FF6}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\img\router.jpg = Docs\img\router.jpg
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -122,6 +127,7 @@ Global
 		{8F9A2275-C4A2-483B-B552-2BD659179626} = {241246FB-7ACD-499B-84D3-9A58A1CDFC6E}
 		{1F553B02-CB8E-4314-9E9E-C0FD2EC6EEAB} = {241246FB-7ACD-499B-84D3-9A58A1CDFC6E}
 		{2B5C13F8-2C52-4308-A9A7-E60618FA685B} = {241246FB-7ACD-499B-84D3-9A58A1CDFC6E}
+		{7348C73B-9B16-4D1D-B303-F98788AF0FF6} = {30F12ADF-E016-4EFE-9623-9AFAA7F8384A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69754B93-EBAD-4F59-A6AC-6F1269C67BA2}
