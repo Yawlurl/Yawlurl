@@ -48,7 +48,7 @@ namespace YawlUrl.Application.ShortUrls.Queries
             var shortUrlEntity = await CheckAndGetShortUrl(slugId, request.Boost, request.IsRouter, cancellationToken);
 
             // @Event
-            _mediator.Publish(new ShortUrlQueried() { ShortUrl = shortUrlEntity }, cancellationToken).Forget();
+            await _mediator.Publish(new ShortUrlQueried() { ShortUrl = shortUrlEntity }, cancellationToken);
 
             return ShortUrlDto.MapFromEntity(shortUrlEntity, _globalSetting.RouterDomain); ;
         }

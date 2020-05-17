@@ -21,4 +21,14 @@
 
 # Beta Preview of Router Home Page
 
-![image](./img/router.jpg)
+![image](./docs/img/router.jpg)
+
+## Installation
+
+    git clone https://github.com/Yawlurl/Yawlurl.git
+
+If docker is used, 
+
+    docker-compose up
+
+Then open browser and enter http://localhost:5000. Yawlurl router will be working.

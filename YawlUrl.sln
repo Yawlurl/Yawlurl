@@ -3,44 +3,40 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{30F12ADF-E016-4EFE-9623-9AFAA7F8384A}"
-	ProjectSection(SolutionItems) = preProject
-		Docs\ReadMe.md = Docs\ReadMe.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{241246FB-7ACD-499B-84D3-9A58A1CDFC6E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9B43C5E6-5BB2-4B7D-94F3-07D9A264FD69}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Application", "Src\YawlUrl.Application\YawlUrl.Application.csproj", "{58A63541-2457-46AB-B38E-AF75B6F918CC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Domain", "Src\YawlUrl.Domain\YawlUrl.Domain.csproj", "{5B48FDE7-F95C-4404-AEEC-431D13EDBE47}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Application.Test", "Tests\YawlUrl.Application.Test\YawlUrl.Application.Test.csproj", "{EFAB28DF-A356-400E-92CE-92AB2F5267C4}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Infrastructure", "Src\YawlUrl.Infrastructure\YawlUrl.Infrastructure.csproj", "{648E2B60-B793-4FA2-BAC2-B4502B7519F7}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Infrastructure.MongoDb", "Src\YawlUrl.Infrastructure.MongoDb\YawlUrl.Infrastructure.MongoDb.csproj", "{209427BF-B6CF-4E66-9474-3709E4C049F3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Core", "Src\YawlUrl.Core\YawlUrl.Core.csproj", "{FE820FF8-2BBD-4D2B-AA06-2D9A439CDF5E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Common", "Src\YawlUrl.Common\YawlUrl.Common.csproj", "{F9E43434-743F-42FA-8C20-22EF9AFDB69E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Integration.Test", "Tests\YawlUrl.Integration.Test\YawlUrl.Integration.Test.csproj", "{7D9D8ACD-2641-46FB-AC1F-569AA93BB594}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Web.Api", "Src\YawlUrl.Web.Api\YawlUrl.Web.Api.csproj", "{583C7F30-45C4-434B-B568-33A44FC3A547}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{12F71C8F-8BE4-4BA9-9C67-F93F47509934}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{30F12ADF-E016-4EFE-9623-9AFAA7F8384A}"
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
 		docker-compose.yml = docker-compose.yml
+		docs\ReadMe.md = docs\ReadMe.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Infrastructure.AspNetCore", "Src\YawlUrl.Infrastructure.AspNetCore\YawlUrl.Infrastructure.AspNetCore.csproj", "{A5190DA6-3269-4A00-83F1-3D3241C9E30E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{241246FB-7ACD-499B-84D3-9A58A1CDFC6E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Web.Router", "Src\YawlUrl.Web.Router\YawlUrl.Web.Router.csproj", "{B2E7BA12-6534-49DE-8B46-6750063156B3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9B43C5E6-5BB2-4B7D-94F3-07D9A264FD69}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Web.App", "Src\YawlUrl.Web.App\YawlUrl.Web.App.csproj", "{CABD2A64-07E6-42D7-AE2C-20C806964169}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Application", "src\YawlUrl.Application\YawlUrl.Application.csproj", "{58A63541-2457-46AB-B38E-AF75B6F918CC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Domain", "src\YawlUrl.Domain\YawlUrl.Domain.csproj", "{5B48FDE7-F95C-4404-AEEC-431D13EDBE47}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Application.Test", "tests\YawlUrl.Application.Test\YawlUrl.Application.Test.csproj", "{EFAB28DF-A356-400E-92CE-92AB2F5267C4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Infrastructure", "src\YawlUrl.Infrastructure\YawlUrl.Infrastructure.csproj", "{648E2B60-B793-4FA2-BAC2-B4502B7519F7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Infrastructure.MongoDb", "src\YawlUrl.Infrastructure.MongoDb\YawlUrl.Infrastructure.MongoDb.csproj", "{209427BF-B6CF-4E66-9474-3709E4C049F3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Core", "src\YawlUrl.Core\YawlUrl.Core.csproj", "{FE820FF8-2BBD-4D2B-AA06-2D9A439CDF5E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Common", "src\YawlUrl.Common\YawlUrl.Common.csproj", "{F9E43434-743F-42FA-8C20-22EF9AFDB69E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Integration.Test", "tests\YawlUrl.Integration.Test\YawlUrl.Integration.Test.csproj", "{7D9D8ACD-2641-46FB-AC1F-569AA93BB594}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Web.Api", "src\YawlUrl.Web.Api\YawlUrl.Web.Api.csproj", "{583C7F30-45C4-434B-B568-33A44FC3A547}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Infrastructure.AspNetCore", "src\YawlUrl.Infrastructure.AspNetCore\YawlUrl.Infrastructure.AspNetCore.csproj", "{A5190DA6-3269-4A00-83F1-3D3241C9E30E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Web.Router", "src\YawlUrl.Web.Router\YawlUrl.Web.Router.csproj", "{B2E7BA12-6534-49DE-8B46-6750063156B3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YawlUrl.Web.App", "src\YawlUrl.Web.App\YawlUrl.Web.App.csproj", "{CABD2A64-07E6-42D7-AE2C-20C806964169}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infra", "Infra", "{8F9A2275-C4A2-483B-B552-2BD659179626}"
 EndProject
@@ -50,7 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{2B5C13
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{7348C73B-9B16-4D1D-B303-F98788AF0FF6}"
 	ProjectSection(SolutionItems) = preProject
-		Docs\img\router.jpg = Docs\img\router.jpg
+		docs\img\router.jpg = docs\img\router.jpg
 	EndProjectSection
 EndProject
 Global
