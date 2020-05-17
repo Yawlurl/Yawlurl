@@ -21,13 +21,13 @@
 
 # Beta Preview of Router Home Page
 
-![image](./Docs/img/router.jpg)
+![image](./docs/img/router.jpg)
 
 ## Installation
 
     git clone https://github.com/Yawlurl/Yawlurl.git
 
-If docker is running, run docker compose up command in Yawlurl project folder. 
+If docker is used, 
 
     docker-compose up
 
