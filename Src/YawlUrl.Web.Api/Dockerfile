@@ -5,17 +5,17 @@ WORKDIR /api
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
-COPY ["src/YawlUrl.Web.Api/YawlUrl.Web.Api.csproj", "src/YawlUrl.Web.Api/"]
-COPY ["src/YawlUrl.Application/YawlUrl.Application.csproj", "src/YawlUrl.Application/"]
-COPY ["src/YawlUrl.Domain/YawlUrl.Domain.csproj", "src/YawlUrl.Domain/"]
-COPY ["src/YawlUrl.Core/YawlUrl.Core.csproj", "src/YawlUrl.Core/"]
-COPY ["src/YawlUrl.Common/YawlUrl.Common.csproj", "src/YawlUrl.Common/"]
-COPY ["src/YawlUrl.Infrastructure.AspNetCore/YawlUrl.Infrastructure.AspNetCore.csproj", "src/YawlUrl.Infrastructure.AspNetCore/"]
-COPY ["src/YawlUrl.Infrastructure.MongoDb/YawlUrl.Infrastructure.MongoDb.csproj", "src/YawlUrl.Infrastructure.MongoDb/"]
-COPY ["src/YawlUrl.Infrastructure/YawlUrl.Infrastructure.csproj", "src/YawlUrl.Infrastructure/"]
-RUN dotnet restore "src/YawlUrl.Web.Api/YawlUrl.Web.Api.csproj"
+COPY ["Src/YawlUrl.Web.Api/YawlUrl.Web.Api.csproj", "Src/YawlUrl.Web.Api/"]
+COPY ["Src/YawlUrl.Application/YawlUrl.Application.csproj", "Src/YawlUrl.Application/"]
+COPY ["Src/YawlUrl.Domain/YawlUrl.Domain.csproj", "Src/YawlUrl.Domain/"]
+COPY ["Src/YawlUrl.Core/YawlUrl.Core.csproj", "Src/YawlUrl.Core/"]
+COPY ["Src/YawlUrl.Common/YawlUrl.Common.csproj", "Src/YawlUrl.Common/"]
+COPY ["Src/YawlUrl.Infrastructure.AspNetCore/YawlUrl.Infrastructure.AspNetCore.csproj", "Src/YawlUrl.Infrastructure.AspNetCore/"]
+COPY ["Src/YawlUrl.Infrastructure.MongoDb/YawlUrl.Infrastructure.MongoDb.csproj", "Src/YawlUrl.Infrastructure.MongoDb/"]
+COPY ["Src/YawlUrl.Infrastructure/YawlUrl.Infrastructure.csproj", "Src/YawlUrl.Infrastructure/"]
+RUN dotnet restore "Src/YawlUrl.Web.Api/YawlUrl.Web.Api.csproj"
 COPY . .
-WORKDIR "/src/YawlUrl.Web.Api"
+WORKDIR "/Src/YawlUrl.Web.Api"
 RUN dotnet build "YawlUrl.Web.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
