@@ -4,7 +4,7 @@ services:
     image: mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim
     build:
       context: .
-      dockerfile: Src/YawlUrl.Web.Router/Dockerfile
+      dockerfile: src/YawlUrl.Web.Router/Dockerfile
     ports:
       - 5000:80
     environment: 

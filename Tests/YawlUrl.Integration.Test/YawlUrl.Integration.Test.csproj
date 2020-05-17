@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Src\YawlUrl.Domain\YawlUrl.Domain.csproj" />
-    <ProjectReference Include="..\..\Src\YawlUrl.Infrastructure.MongoDb\YawlUrl.Infrastructure.MongoDb.csproj" />
+    <ProjectReference Include="..\..\src\YawlUrl.Domain\YawlUrl.Domain.csproj" />
+    <ProjectReference Include="..\..\src\YawlUrl.Infrastructure.MongoDb\YawlUrl.Infrastructure.MongoDb.csproj" />
   </ItemGroup>
 
   <ItemGroup>

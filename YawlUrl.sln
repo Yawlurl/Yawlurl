@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{30F12ADF-E
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
 		docker-compose.yml = docker-compose.yml
-		docs\ReadMe.md = docs\ReadMe.md
+		Readme.md = Readme.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{241246FB-7ACD-499B-84D3-9A58A1CDFC6E}"
